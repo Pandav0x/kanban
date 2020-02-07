@@ -10,13 +10,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class ProjectController
- * @Route('/project')
+ * @Route("/project")
  * @package App\Controller
  */
 class ProjectController extends AbstractController
 {
     /**
-     * @Route('/', methods={'PUT'})
+     * @Route("/", methods={"POST"})
      * @param Request $request
      * @return JsonResponse
      */
@@ -26,17 +26,17 @@ class ProjectController extends AbstractController
     }
 
     /**
-     * @Route('/', methods={'GET'})
+     * @Route("/", methods={"GET"})
      * @param Request $request
      * @return JsonResponse
      */
     public function read(Request $request):JsonResponse
     {
-        return new JsonResponse();
+        return new JsonResponse(['code' => 200]);
     }
 
     /**
-     * @Route('/', methods={'POST'})
+     * @Route("/", methods={"PUT"})
      * @param Request $request
      * @return JsonResponse
      */
@@ -46,7 +46,7 @@ class ProjectController extends AbstractController
     }
 
     /**
-     * @Route('/', methods={'DELETE'})
+     * @Route("/", methods={"DELETE"})
      * @param Request $request
      * @return JsonResponse
      */

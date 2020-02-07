@@ -10,13 +10,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class TaskController
- * @Route('/task')
+ * @Route("/task")
  * @package App\Controller
  */
 class TaskController extends AbstractController
 {
     /**
-     * @Route('/', methods={'PUT'})
+     * @Route("/", methods={"POST"})
      * @param Request $request
      * @return JsonResponse
      */
@@ -26,7 +26,7 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @Route('/', methods={'GET'})
+     * @Route("/", methods={"GET"})
      * @param Request $request
      * @return JsonResponse
      */
@@ -36,7 +36,7 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @Route('/', methods={'POST'})
+     * @Route("/", methods={"PUT"})
      * @param Request $request
      * @return JsonResponse
      */
@@ -46,7 +46,7 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @Route('/', methods={'DELETE'})
+     * @Route("/", methods={"DELETE"})
      * @param Request $request
      * @return JsonResponse
      */
