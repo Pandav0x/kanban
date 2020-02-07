@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Controller;
+namespace App\Command;
 
 
 use App\Entity\Status;
