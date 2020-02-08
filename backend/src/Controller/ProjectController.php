@@ -3,9 +3,9 @@
 
 namespace App\Controller;
 
+use App\Repository\ProjectRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -13,8 +13,24 @@ use Symfony\Component\Routing\Annotation\Route;
  * @Route("/project")
  * @package App\Controller
  */
-class ProjectController extends AbstractController
+class ProjectController extends CustomController
 {
+    /**
+     * @var ProjectRepository
+     */
+    private $projectRepository;
+
+    /**
+     * ProjectController constructor.
+     * @param ProjectRepository $projectRepository
+     */
+    public function __construct(ProjectRepository $projectRepository)
+    {
+        parent::__construct();
+        $this->projectRepository = $projectRepository;
+    }
+
+
     /**
      * @Route("/", methods={"POST"})
      * @param Request $request
@@ -26,13 +42,14 @@ class ProjectController extends AbstractController
     }
 
     /**
-     * @Route("/", methods={"GET"})
+     * @Route("/{id}", defaults={"id"=null}, methods={"GET"})
      * @param Request $request
+     * @param string|null $id
      * @return JsonResponse
      */
-    public function read(Request $request):JsonResponse
+    public function read(Request $request, ?string $id):JsonResponse
     {
-        return new JsonResponse(['code' => 200]);
+        return $this->customRead($this->projectRepository, $id);
     }
 
     /**

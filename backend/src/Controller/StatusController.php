@@ -4,18 +4,32 @@
 namespace App\Controller;
 
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\StatusRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-
 /**
  * Class StatusController
  * @Route("/status")
  * @package App\Controller
  */
-class StatusController extends AbstractController
+class StatusController extends CustomController
 {
+    /**
+     * @var StatusRepository
+     */
+    protected $statusRepository;
+
+    /**
+     * StatusController constructor.
+     * @param StatusRepository $statusRepository
+     */
+    public function __construct(StatusRepository $statusRepository)
+    {
+        parent::__construct();
+        $this->statusRepository = $statusRepository;
+    }
+
     /**
      * @Route("/", methods={"POST"})
      * @param Request $request
@@ -27,13 +41,14 @@ class StatusController extends AbstractController
     }
 
     /**
-     * @Route("/", methods={"GET"})
+     * @Route("/{id}", defaults={"id"=null}, methods={"GET"})
      * @param Request $request
+     * @param string $id
      * @return JsonResponse
      */
-    public function read(Request $request):JsonResponse
+    public function read(Request $request, ?string $id):JsonResponse
     {
-        return new JsonResponse(['code' => 200]);
+        return $this->customRead($this->statusRepository, $id);
     }
 
     /**

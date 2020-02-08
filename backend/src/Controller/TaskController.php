@@ -3,7 +3,7 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\TaskRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,8 +13,24 @@ use Symfony\Component\Routing\Annotation\Route;
  * @Route("/task")
  * @package App\Controller
  */
-class TaskController extends AbstractController
+class TaskController extends CustomController
 {
+    /**
+     * @var TaskRepository
+     */
+    private $taskRepository;
+
+    /**
+     * TaskController constructor.
+     * @param TaskRepository $taskRepository
+     */
+    public function __construct(TaskRepository $taskRepository)
+    {
+        parent::__construct();
+        $this->taskRepository = $taskRepository;
+    }
+
+
     /**
      * @Route("/", methods={"POST"})
      * @param Request $request
@@ -26,13 +42,14 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @Route("/", methods={"GET"})
+     * @Route("/{id}", defaults={"id"=null}, methods={"GET"})
      * @param Request $request
+     * @param string|null $id
      * @return JsonResponse
      */
-    public function read(Request $request):JsonResponse
+    public function read(Request $request, ?string $id): JsonResponse
     {
-        return new JsonResponse();
+        return $this->customRead($this->taskRepository, $id);
     }
 
     /**
