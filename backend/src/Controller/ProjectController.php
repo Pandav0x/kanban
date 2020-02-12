@@ -3,7 +3,7 @@
 
 namespace App\Controller;
 
-use App\Repository\ProjectRepository;
+use App\Entity\Project;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,22 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProjectController extends CustomController
 {
     /**
-     * @var ProjectRepository
-     */
-    private $projectRepository;
-
-    /**
-     * ProjectController constructor.
-     * @param ProjectRepository $projectRepository
-     */
-    public function __construct(ProjectRepository $projectRepository)
-    {
-        parent::__construct();
-        $this->projectRepository = $projectRepository;
-    }
-
-
-    /**
      * @Route("/", methods={"POST"})
      * @param Request $request
      * @return JsonResponse
@@ -42,14 +26,22 @@ class ProjectController extends CustomController
     }
 
     /**
-     * @Route("/{id}", defaults={"id"=null}, methods={"GET"})
-     * @param Request $request
-     * @param string|null $id
+     * @Route("/{id}", methods={"GET"})
+     * @param Project $project
      * @return JsonResponse
      */
-    public function read(Request $request, ?string $id):JsonResponse
+    public function read(Project $project): JsonResponse
     {
-        return $this->customRead($this->projectRepository, $id);
+        return $this->json($project);
+    }
+
+    /**
+     * @Route("/", methods={"GET"})
+     * @return JsonResponse
+     */
+    public function readAll(): JsonResponse
+    {
+        return $this->json($this->em->getRepository(Project::class)->findAll());
     }
 
     /**
@@ -57,18 +49,27 @@ class ProjectController extends CustomController
      * @param Request $request
      * @return JsonResponse
      */
-    public function update(Request $request):JsonResponse
+    public function update(Request $request): JsonResponse
     {
         return new JsonResponse();
     }
 
     /**
-     * @Route("/", methods={"DELETE"})
-     * @param Request $request
+     * @Route("/{id}", methods={"DELETE"})
+     * @param Project $status
      * @return JsonResponse
      */
-    public function delete(Request $request):JsonResponse
+    public function delete(Project $status): JsonResponse
     {
-        return new JsonResponse();
+        $id = $status->getId();
+        $this->em->remove($status);
+        $this->em->flush();
+
+        return new JsonResponse(
+            [
+                'code' => 200,
+                'message' => sprintf('%d successfully deleted.', $id)
+            ]
+        );
     }
 }

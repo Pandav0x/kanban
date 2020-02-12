@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,35 +20,76 @@ class CustomController extends AbstractController
      */
     protected $serializer;
 
+    /**
+     * @var EntityManagerInterface
+     */
+    protected $em;
+
+    protected $repository;
+
     public function __construct()
     {
         $this->serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
     }
 
-    public function customCreate(Request $request): JsonResponse
+    /**
+     * @required
+     * @param EntityManagerInterface $em
+     */
+    public function setEntityManager(EntityManagerInterface $em): void
+    {
+        $this->em = $em;
+    }
+
+    /**
+     * @param Request $request
+     * @param ServiceEntityRepository $repository
+     * @return JsonResponse
+     */
+    public function createEntry(Request $request, ServiceEntityRepository $repository): JsonResponse
     {
         return new JsonResponse();
     }
 
-    public function customRead(ServiceEntityRepository $repository, ?string $id): JsonResponse
+    /**
+     * @param ServiceEntityRepository $repository
+     * @param int|null $id
+     * @return JsonResponse
+     */
+    public function getAll(ServiceEntityRepository $repository, ?int $id): JsonResponse
     {
-        if($id !== null && is_numeric($id)){
+        if($id !== null){
             $payload = $this->serializer->serialize($repository->findOneById($id), 'json');
-        }
-        else{
+        } else {
             $payload = $this->serializer->serialize($repository->findAll(), 'json');
         }
 
         return new JsonResponse(['code' => 200, 'data' => json_decode($payload, true)]);
     }
 
-
-    public function customUpdate(Request $request):JsonResponse
+    /**
+     * @param Request $request
+     * @param ServiceEntityRepository $repository
+     * @param string|null $id
+     * @return JsonResponse
+     */
+    public function updateEntry(Request $request, ServiceEntityRepository $repository, ?string $id): JsonResponse
     {
+        if($id !== null && is_numeric($id)){
+            $payload = $this->serializer->serialize($repository->findOneById($id), 'json');
+        } else {
+            $payload = $this->serializer->serialize($repository->findAll(), 'json');
+        }
+
         return new JsonResponse();
     }
 
-    public function customDelete(Request $request):JsonResponse
+    /**
+     * @param ServiceEntityRepository $repository
+     * @param string|null $id
+     * @return JsonResponse
+     */
+    public function deleteEntry(ServiceEntityRepository $repository, ?string $id): JsonResponse
     {
         return new JsonResponse();
     }

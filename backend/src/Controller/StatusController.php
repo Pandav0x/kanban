@@ -4,10 +4,11 @@
 namespace App\Controller;
 
 
-use App\Repository\StatusRepository;
+use App\Entity\Status;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+
 /**
  * Class StatusController
  * @Route("/status")
@@ -15,21 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class StatusController extends CustomController
 {
-    /**
-     * @var StatusRepository
-     */
-    protected $statusRepository;
-
-    /**
-     * StatusController constructor.
-     * @param StatusRepository $statusRepository
-     */
-    public function __construct(StatusRepository $statusRepository)
-    {
-        parent::__construct();
-        $this->statusRepository = $statusRepository;
-    }
-
     /**
      * @Route("/", methods={"POST"})
      * @param Request $request
@@ -41,14 +27,22 @@ class StatusController extends CustomController
     }
 
     /**
-     * @Route("/{id}", defaults={"id"=null}, methods={"GET"})
-     * @param Request $request
-     * @param string $id
+     * @Route("/{id}", methods={"GET"})
+     * @param Status $status
      * @return JsonResponse
      */
-    public function read(Request $request, ?string $id):JsonResponse
+    public function read(Status $status): JsonResponse
     {
-        return $this->customRead($this->statusRepository, $id);
+        return $this->json($status);
+    }
+
+    /**
+     * @Route("/", methods={"GET"})
+     * @return JsonResponse
+     */
+    public function readAll(): JsonResponse
+    {
+        return $this->json($this->em->getRepository(Status::class)->findAll());
     }
 
     /**
@@ -56,18 +50,27 @@ class StatusController extends CustomController
      * @param Request $request
      * @return JsonResponse
      */
-    public function update(Request $request):JsonResponse
+    public function update(Request $request): JsonResponse
     {
         return new JsonResponse();
     }
 
     /**
-     * @Route("/", methods={"DELETE"})
-     * @param Request $request
+     * @Route("/{id}", methods={"DELETE"})
+     * @param Status $status
      * @return JsonResponse
      */
-    public function delete(Request $request):JsonResponse
+    public function delete(Status $status): JsonResponse
     {
-        return new JsonResponse();
+        $id = $status->getId();
+        $this->em->remove($status);
+        $this->em->flush();
+
+        return new JsonResponse(
+            [
+                'code' => 200,
+                'message' => sprintf('%d successfully deleted.', $id)
+            ]
+        );
     }
 }

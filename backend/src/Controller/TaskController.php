@@ -3,7 +3,7 @@
 
 namespace App\Controller;
 
-use App\Repository\TaskRepository;
+use App\Entity\Task;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,22 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class TaskController extends CustomController
 {
     /**
-     * @var TaskRepository
-     */
-    private $taskRepository;
-
-    /**
-     * TaskController constructor.
-     * @param TaskRepository $taskRepository
-     */
-    public function __construct(TaskRepository $taskRepository)
-    {
-        parent::__construct();
-        $this->taskRepository = $taskRepository;
-    }
-
-
-    /**
      * @Route("/", methods={"POST"})
      * @param Request $request
      * @return JsonResponse
@@ -42,33 +26,51 @@ class TaskController extends CustomController
     }
 
     /**
-     * @Route("/{id}", defaults={"id"=null}, methods={"GET"})
-     * @param Request $request
-     * @param string|null $id
+     * @Route("/{id}", methods={"GET"})
+     * @param Task $project
      * @return JsonResponse
      */
-    public function read(Request $request, ?string $id): JsonResponse
+    public function read(Task $project): JsonResponse
     {
-        return $this->customRead($this->taskRepository, $id);
+        return $this->json($project);
     }
+
+    /**
+     * @Route("/", methods={"GET"})
+     * @return JsonResponse
+     */
+    public function readAll(): JsonResponse
+    {
+        return $this->json($this->em->getRepository(Task::class)->findAll());
+    }
+
 
     /**
      * @Route("/", methods={"PUT"})
      * @param Request $request
      * @return JsonResponse
      */
-    public function update(Request $request):JsonResponse
+    public function update(Request $request): JsonResponse
     {
         return new JsonResponse();
     }
 
     /**
-     * @Route("/", methods={"DELETE"})
-     * @param Request $request
+     * @Route("/{id}", methods={"DELETE"})
+     * @param Task $status
      * @return JsonResponse
      */
-    public function delete(Request $request):JsonResponse
+    public function delete(Task $status): JsonResponse
     {
-        return new JsonResponse();
+        $id = $status->getId();
+        $this->em->remove($status);
+        $this->em->flush();
+
+        return new JsonResponse(
+            [
+                'code' => 200,
+                'message' => sprintf('%d successfully deleted.', $id)
+            ]
+        );
     }
 }
