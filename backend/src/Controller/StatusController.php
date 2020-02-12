@@ -27,11 +27,11 @@ class StatusController extends CustomController
     }
 
     /**
-     * @Route("/{id}", methods={"GET"})
+     * @Route("/{id}", defaults={"id"=null}, methods={"GET"})
      * @param Status $status
      * @return JsonResponse
      */
-    public function read(Status $status): JsonResponse
+    public function read(?Status $status): JsonResponse
     {
         return $this->json($status);
     }

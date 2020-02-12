@@ -26,11 +26,11 @@ class TaskController extends CustomController
     }
 
     /**
-     * @Route("/{id}", methods={"GET"})
+     * @Route("/{id}", defaults={"id"=null}, methods={"GET"})
      * @param Task $project
      * @return JsonResponse
      */
-    public function read(Task $project): JsonResponse
+    public function read(?Task $project): JsonResponse
     {
         return $this->json($project);
     }

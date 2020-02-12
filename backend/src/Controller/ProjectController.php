@@ -26,11 +26,11 @@ class ProjectController extends CustomController
     }
 
     /**
-     * @Route("/{id}", methods={"GET"})
+     * @Route("/{id}", defaults={"id"=null}, methods={"GET"})
      * @param Project $project
      * @return JsonResponse
      */
-    public function read(Project $project): JsonResponse
+    public function read(?Project $project): JsonResponse
     {
         return $this->json($project);
     }
