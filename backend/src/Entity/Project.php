@@ -24,7 +24,7 @@ class Project
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $gitUrl;
 
@@ -65,14 +65,6 @@ class Project
         $this->gitUrl = $gitUrl;
 
         return $this;
-    }
-
-    /**
-     * @return Collection|Task[]
-     */
-    public function getTasks(): Collection
-    {
-        return $this->tasks;
     }
 
     public function addTask(Task $task): self

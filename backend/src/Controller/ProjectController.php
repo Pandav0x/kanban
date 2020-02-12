@@ -22,11 +22,26 @@ class ProjectController extends CustomController
      */
     public function create(Request $request): JsonResponse
     {
-        return new JsonResponse();
+        $project = new Project();
+        $project->setName($request->get('name'));
+
+        $this->em->persist($project);
+        $this->em->flush();
+
+        return new JsonResponse(
+            [
+                'code' => 200,
+                'message' => sprintf(
+                    '%s created (id: %d)',
+                    $request->get('name'),
+                    $project->getId()
+                )
+            ]
+        );
     }
 
     /**
-     * @Route("/{id}", defaults={"id"=null}, methods={"GET"})
+     * @Route("/{id}", methods={"GET"})
      * @param Project $project
      * @return JsonResponse
      */
@@ -45,30 +60,55 @@ class ProjectController extends CustomController
     }
 
     /**
-     * @Route("/", methods={"PUT"})
+     * @Route("/{id}", methods={"PUT"})
+     * @param Project|null $project
      * @param Request $request
      * @return JsonResponse
      */
-    public function update(Request $request): JsonResponse
+    public function update(?Project $project, Request $request): JsonResponse
     {
-        return new JsonResponse();
+        if($project === null){
+            return new JsonResponse([
+                'code' => 404,
+                'message' => 'No status found.'
+            ]);
+        }
+
+        $project->setName($request->get('name'));
+
+        $this->em->flush();
+
+        return new JsonResponse([
+            'code' => 200,
+            'message' => sprintf(
+                'Project (id: %d) has been updated.',
+                $project->getId()
+            )
+        ]);
     }
 
     /**
      * @Route("/{id}", methods={"DELETE"})
-     * @param Project $status
+     * @param Project|null $project
      * @return JsonResponse
      */
-    public function delete(Project $status): JsonResponse
+    public function delete(?Project $project): JsonResponse
     {
-        $id = $status->getId();
-        $this->em->remove($status);
+        if($project === null){
+            return new JsonResponse([
+                'code' => 404,
+                'message' => 'No project found.'
+            ]);
+        }
+
+        $id = $project->getId();
+        $this->em->remove($project);
         $this->em->flush();
 
         return new JsonResponse(
             [
                 'code' => 200,
-                'message' => sprintf('%d successfully deleted.', $id)
+                'message' => sprintf('Project %d successfully deleted.', $id)
             ]
         );
     }

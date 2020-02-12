@@ -83,10 +83,15 @@ class StatusController extends CustomController
 
         $status->setName($request->get('name'));
 
-        $this->em->persist($status);
         $this->em->flush();
 
-        return new JsonResponse();
+        return new JsonResponse([
+            'code' => 200,
+            'message' => sprintf(
+                'Status (id: %d) has been updated.',
+                $status->getId()
+            )
+        ]);
     }
 
     /**
@@ -103,7 +108,7 @@ class StatusController extends CustomController
         return new JsonResponse(
             [
                 'code' => 200,
-                'message' => sprintf('%d successfully deleted.', $id)
+                'message' => sprintf('Status %d successfully deleted.', $id)
             ]
         );
     }

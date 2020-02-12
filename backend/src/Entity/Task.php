@@ -28,7 +28,6 @@ class Task
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Status", inversedBy="tasks")
-     * @ORM\JoinColumn(nullable=false)
      */
     private $status;
 
