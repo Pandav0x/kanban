@@ -23,16 +23,37 @@ class StatusController extends CustomController
      */
     public function create(Request $request): JsonResponse
     {
-        return new JsonResponse();
+        $status = new Status();
+        $status->setName($request->get('name'));
+
+        $this->em->persist($status);
+        $this->em->flush();
+
+        return new JsonResponse(
+            [
+                'code' => 200,
+                'message' => sprintf(
+                    '%s created (id: %d)',
+                    $request->get('name'),
+                    $status->getId()
+                )
+            ]
+        );
     }
 
     /**
-     * @Route("/{id}", defaults={"id"=null}, methods={"GET"})
+     * @Route("/{id}", methods={"GET"})
      * @param Status $status
      * @return JsonResponse
      */
     public function read(?Status $status): JsonResponse
     {
+        if($status === null){
+            return new JsonResponse([
+                'code' => 404,
+                'message' => 'No status found.'
+            ]);
+        }
         return $this->json($status);
     }
 
@@ -46,12 +67,25 @@ class StatusController extends CustomController
     }
 
     /**
-     * @Route("/", methods={"PUT"})
+     * @Route("/{id}", methods={"PUT"})
+     * @param Status $status
      * @param Request $request
      * @return JsonResponse
      */
-    public function update(Request $request): JsonResponse
+    public function update(?Status $status, Request $request): JsonResponse
     {
+        if($status === null){
+            return new JsonResponse([
+                'code' => 404,
+                'message' => 'No status found.'
+            ]);
+        }
+
+        $status->setName($request->get('name'));
+
+        $this->em->persist($status);
+        $this->em->flush();
+
         return new JsonResponse();
     }
 
