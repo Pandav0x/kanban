@@ -1,21 +1,26 @@
 let apiUrl = 'http://127.0.0.1:8000';
-let call_statuses
 
 document.addEventListener("DOMContentLoaded", function(){
 
-    let mainContentWrapper = document.getElementById('main-content-wrapper');
+    let promise_statuses = new Promise((resolve) => { ajax('/status', 'GET', resolve); });
+    let promise_projects = new Promise((resolve) => { ajax('/project', 'GET', resolve); });
+    let promise_tasks =  new Promise((resolve) => { ajax('/task', 'GET', resolve); });
 
-    call_statuses = new Promise((resolve) => { ajax('/status', 'GET', resolve); });
-    let call_projects = new Promise((resolve) => { ajax('/project', 'GET', resolve); });
-    let call_tasks =  new Promise((resolve) => { ajax('/task', 'GET', resolve); });
+    Promise.all([promise_statuses, promise_projects, promise_tasks])
+        .then(([unparsed_statuses, unparsed_projects, unparsed_tasks]) => {
 
-    Promise.all([call_statuses, call_projects, call_tasks])
-        .then(([statuses, projects, tasks]) => {
+            let statuses = JSON.parse(unparsed_statuses);
+            let projects = JSON.parse(unparsed_projects);
+            let tasks = JSON.parse(unparsed_tasks);
 
-            console.log(projects);
+            //TODO: do the elements tree before iterate in it
 
-            //TODO
-
+            statuses.forEach(function(status){
+               let status_column = document.createElement('div');
+               let inner_text = document.createTextNode(status.name);
+               status_column.appendChild(inner_text);
+               addContent(status_column);
+            });
         });
 });
 
@@ -31,4 +36,9 @@ function ajax(url, protocol, callback)
         }
     };
     xhr.send();
+}
+
+function addContent(content)
+{
+    document.getElementById('main-content-container').appendChild(content);
 }
