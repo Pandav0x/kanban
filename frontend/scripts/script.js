@@ -3,30 +3,72 @@ let apiUrl = 'http://127.0.0.1:8000';
 document.addEventListener("DOMContentLoaded", function(){
 
     let promise_statuses = new Promise((resolve) => { ajax('/status', 'GET', resolve); });
-    let promise_projects = new Promise((resolve) => { ajax('/project', 'GET', resolve); });
-    let promise_tasks =  new Promise((resolve) => { ajax('/task', 'GET', resolve); });
 
-    Promise.all([promise_statuses, promise_projects, promise_tasks])
-        .then(([unparsed_statuses, unparsed_projects, unparsed_tasks]) => {
+    Promise.resolve(promise_statuses)
+        .then((unparsed_statuses) => {
 
             let statuses = JSON.parse(unparsed_statuses);
-            let projects = JSON.parse(unparsed_projects);
-            let tasks = JSON.parse(unparsed_tasks);
-
-            //TODO: do the elements tree before iterate in it
 
             statuses.forEach(function(status){
-               let status_column = document.createElement('div');
-               let inner_text = document.createTextNode(status.name);
-               status_column.appendChild(inner_text);
-               addContent(status_column);
+                let status_column = document.createElement('div');
+                let status_tasks = document.createElement('ul');
+
+                let promise_tasks =  new Promise((resolve) => { ajax('/status/' + status.id + '/task', 'GET', resolve); });
+
+                Promise.resolve(promise_tasks).then((unparsed_tasks) => {
+                   let tasks = JSON.parse(unparsed_tasks);
+                   console.log(tasks);
+
+                   tasks.forEach(function(task){
+                       let task_element, task_name;
+
+                       console.log(task);
+                       if(task.project !== null){
+                           if(document.getElementById(status.name + '_' + task.project.name) !== null){
+
+                               console.log('appending to project');
+
+                               task_element = document.createElement('li');
+                               task_name = document.createTextNode(task.name);
+                               task_element.appendChild(task_name);
+                               document.getElementById(status.name + '_' + task.project.name).appendChild(task_element);
+
+                           } else {
+
+                               console.log('creating project');
+
+                               let project_container = document.createElement('li');
+                               let project_name = document.createTextNode(task.project.name);
+                               project_container.appendChild(project_name);
+                               let project_container_content = document.createElement('ul');
+
+                               project_container_content.setAttribute('id', status.name + '_' + task.project.name);
+                               console.log(project_container);
+                               task_element = document.createElement('li');
+                               task_name = document.createTextNode(task.name);
+                               task_element.appendChild(task_name);
+                               project_container_content.appendChild(task_element);
+
+                               project_container.appendChild(project_container_content);
+                               status_tasks.appendChild(project_container);
+
+                           }
+                       }
+                   });
+                });
+
+
+                let inner_text = document.createTextNode(status.name);
+                status_column.appendChild(inner_text);
+                status_column.appendChild(status_tasks);
+                addContent(status_column);
             });
         });
 });
 
 function ajax(url, protocol, callback)
 {
-    console.log(apiUrl + url);
+    console.log(apiUrl + url); //TODO: remove
 
     let xhr = new XMLHttpRequest();
     xhr.open(protocol, apiUrl + url);
