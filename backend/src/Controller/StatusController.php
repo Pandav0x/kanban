@@ -63,7 +63,7 @@ class StatusController extends CustomController
      */
     public function readAll(): JsonResponse
     {
-        return $this->json($this->em->getRepository(Status::class)->findAll());
+        return $this->json(json_decode($this->serializer->serialize($this->em->getRepository(Status::class)->findAll(), 'json'), true));
     }
 
     /**
@@ -111,5 +111,15 @@ class StatusController extends CustomController
                 'message' => sprintf('Status %d successfully deleted.', $id)
             ]
         );
+    }
+
+    /**
+     * @Route("/{id}/task", methods={"GET"})
+     * @param Status $status
+     * @return JsonResponse
+     */
+    public function getTask(Status $status): JsonResponse
+    {
+        return new JsonResponse(json_decode($this->serializer->serialize($status->getTasks(), 'json'), true));
     }
 }

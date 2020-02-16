@@ -50,6 +50,11 @@ class Status
         return $this;
     }
 
+    public function getTasks(): ?Collection
+    {
+        return $this->tasks;
+    }
+
     public function addTask(Task $task): self
     {
         if (!$this->tasks->contains($task)) {

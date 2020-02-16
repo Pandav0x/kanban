@@ -47,7 +47,7 @@ class ProjectController extends CustomController
      */
     public function read(?Project $project): JsonResponse
     {
-        return $this->json($project);
+        return new JsonResponse(json_decode($this->serializer->serialize($project, 'json'), true));
     }
 
     /**
@@ -56,7 +56,7 @@ class ProjectController extends CustomController
      */
     public function readAll(): JsonResponse
     {
-        return $this->json($this->em->getRepository(Project::class)->findAll());
+        return new JsonResponse(json_decode($this->serializer->serialize($this->em->getRepository(Project::class)->findAll(), 'json'), true));
     }
 
     /**

@@ -180,4 +180,24 @@ class TaskController extends CustomController
                 $project->getName()
             )]);
     }
+
+    /**
+     * @Route("/{id}/status")
+     * @param Task $task
+     * @return JsonResponse
+     */
+    public function getStatus(Task $task): JsonResponse
+    {
+        return $this->json($task->getStatus());
+    }
+
+    /**
+     * @Route("/{id}/project")
+     * @param Task $task
+     * @return JsonResponse
+     */
+    public function getProject(Task $task): JsonResponse
+    {
+        return $this->json($task->getProject());
+    }
 }
