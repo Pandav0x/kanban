@@ -16,7 +16,7 @@ class StatusFixture extends BaseFixture
      */
     protected function loadData(ObjectManager $manager)
     {
-        $this->createMany(4, 'status', function(){
+        $this->createMany($this->faker->numberBetween(5, 8), 'status', function(){
             $status = new Status();
             $status->setName($this->faker->word);
 
