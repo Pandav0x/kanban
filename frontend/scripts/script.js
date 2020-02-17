@@ -35,8 +35,11 @@ document.addEventListener("DOMContentLoaded", function(){
                            } else {
 
                                let project_container = document.createElement('li');
+                               let project_name_container = document.createElement('span');
                                let project_name = document.createTextNode(task.project.name);
-                               project_container.appendChild(project_name);
+                               project_name_container.appendChild(project_name);
+                               project_name_container.classList.add('project-title');
+                               project_container.appendChild(project_name_container);
                                let project_container_content = document.createElement('ul');
 
                                project_container_content.setAttribute('id', status.name + '-' + task.project.name);

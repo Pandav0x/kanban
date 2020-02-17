@@ -74,3 +74,10 @@ ul > li > ul{
 
     min-height: 4em;
 }
+
+.project-title{
+
+    font-weight: bold;
+
+    color: dodgerblue;
+}
