@@ -18,18 +18,18 @@ document.addEventListener("DOMContentLoaded", function(){
 
                 Promise.resolve(promise_tasks).then((unparsed_tasks) => {
                    let tasks = JSON.parse(unparsed_tasks);
-                   console.log(tasks);
 
                    tasks.forEach(function(task){
                        let task_element, task_name;
 
-                       console.log(task);
                        if(task.project !== null){
                            if(document.getElementById(status.name + '-' + task.project.name) !== null){
 
+                               //refactor those 4 lines (that are in the else as well)
                                task_element = document.createElement('li');
                                task_name = document.createTextNode(task.name);
                                task_element.appendChild(task_name);
+                               task_element.classList.add('task-element');
                                document.getElementById(status.name + '-' + task.project.name).appendChild(task_element);
 
                            } else {
@@ -40,10 +40,10 @@ document.addEventListener("DOMContentLoaded", function(){
                                let project_container_content = document.createElement('ul');
 
                                project_container_content.setAttribute('id', status.name + '-' + task.project.name);
-                               console.log(project_container);
                                task_element = document.createElement('li');
                                task_name = document.createTextNode(task.name);
                                task_element.appendChild(task_name);
+                               task_element.classList.add('task-element');
                                project_container_content.appendChild(task_element);
 
                                project_container.appendChild(project_container_content);
@@ -53,8 +53,11 @@ document.addEventListener("DOMContentLoaded", function(){
                    });
                 });
 
-                let inner_text = document.createTextNode(status.name);
-                status_column.appendChild(inner_text);
+                let status_inner_text_container = document.createElement('h2');
+                let status_inner_text = document.createTextNode(status.name);
+                status_inner_text_container.appendChild(status_inner_text);
+
+                status_column.appendChild(status_inner_text_container);
                 status_column.appendChild(status_tasks);
                 addContent(status_column);
             });
