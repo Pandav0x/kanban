@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
             statuses.forEach(function(status){
                 let status_column = document.createElement('div');
-                status_column.setAttribute('class', 'status-column')
+                status_column.setAttribute('class', 'status-column');
                 let status_tasks = document.createElement('ul');
 
                 let promise_tasks =  new Promise((resolve) => { ajax('/status/' + status.id + '/task', 'GET', resolve); });
@@ -20,16 +20,19 @@ document.addEventListener("DOMContentLoaded", function(){
                    let tasks = JSON.parse(unparsed_tasks);
 
                    tasks.forEach(function(task){
-                       let task_element, task_name;
+                       let task_element, task_name, task_element_content;
 
                        if(task.project !== null){
                            if(document.getElementById(status.name + '-' + task.project.name) !== null){
 
-                               //refactor those 4 lines (that are in the else as well)
+                               //TODO: refactor those 4 lines (that are in the else as well)
                                task_element = document.createElement('li');
                                task_name = document.createTextNode(task.name);
-                               task_element.appendChild(task_name);
+                               task_element_content = document.createElement('div');
+                               task_element_content.appendChild(task_name);
+                               task_element.appendChild(task_element_content);
                                task_element.classList.add('task-element');
+                               task_element_content.setAttribute('draggable', 'true');
                                document.getElementById(status.name + '-' + task.project.name).appendChild(task_element);
 
                            } else {
@@ -43,9 +46,13 @@ document.addEventListener("DOMContentLoaded", function(){
                                let project_container_content = document.createElement('ul');
 
                                project_container_content.setAttribute('id', status.name + '-' + task.project.name);
+                               project_container_content.classList.add('project-container');
                                task_element = document.createElement('li');
+                               task_element_content = document.createElement('div');
                                task_name = document.createTextNode(task.name);
-                               task_element.appendChild(task_name);
+                               task_element_content.setAttribute('draggable', 'true');
+                               task_element_content.appendChild(task_name);
+                               task_element.appendChild(task_element_content);
                                task_element.classList.add('task-element');
                                project_container_content.appendChild(task_element);
 
@@ -54,6 +61,8 @@ document.addEventListener("DOMContentLoaded", function(){
                            }
                        }
                    });
+                    console.log('all content loaded');
+                    a();
                 });
 
                 let status_inner_text_container = document.createElement('h2');
@@ -64,8 +73,11 @@ document.addEventListener("DOMContentLoaded", function(){
                 status_column.appendChild(status_tasks);
                 addContent(status_column);
             });
+
         });
 });
+
+function b(){}
 
 function ajax(url, protocol, callback)
 {
@@ -82,4 +94,52 @@ function ajax(url, protocol, callback)
 function addContent(content)
 {
     document.getElementById('main-content-container').appendChild(content);
+}
+
+function a(){
+    let tasks = document.getElementsByClassName('task-element');
+
+    for(let i = 0; i < tasks.length; i++)
+    {
+        let task = tasks[i];
+        task.addEventListener('dblclick', function(){
+            console.log('clicked !');
+        });
+
+        task.addEventListener('dragstart', function(event){
+            event.currentTarget.classList.add('dragged');
+        });
+
+        task.addEventListener('drag', function(event){
+
+        });
+
+        task.addEventListener('dragend', function(event){
+            event.currentTarget.classList.remove('dragged');
+
+            console.log(event.target.parentNode.contains(event.srcElement));
+        });
+    }
+
+    let columns = document.getElementsByClassName('status-column');
+    for(let i = 0; i < columns.length; i++)
+    {
+        let column = columns[i];
+
+        column.addEventListener('drop', function(event){
+
+        });
+
+        column.addEventListener('dragenter', function(event){
+        });
+
+        column.addEventListener('dragover', function(event){
+
+        });
+
+        column.addEventListener('dragleave', function(event){
+
+        });
+    }
+
 }
