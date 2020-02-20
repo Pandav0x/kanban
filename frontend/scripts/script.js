@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", function(){
                                task_element = document.createElement('li');
                                task_name = document.createTextNode(task.name);
                                task_element_content = document.createElement('div');
+                               task_element_content.id = getRandomString();
                                task_element_content.appendChild(task_name);
                                task_element.appendChild(task_element_content);
                                task_element.classList.add('task-element');
@@ -49,6 +50,7 @@ document.addEventListener("DOMContentLoaded", function(){
                                project_container_content.classList.add('project-container');
                                task_element = document.createElement('li');
                                task_element_content = document.createElement('div');
+                               task_element_content.id = getRandomString();
                                task_name = document.createTextNode(task.name);
                                task_element_content.setAttribute('draggable', 'true');
                                task_element_content.appendChild(task_name);
@@ -61,7 +63,6 @@ document.addEventListener("DOMContentLoaded", function(){
                            }
                        }
                    });
-                    console.log('all content loaded');
                     a();
                 });
 
@@ -91,14 +92,19 @@ function ajax(url, protocol, callback)
     xhr.send();
 }
 
+function getRandomString()
+{
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+}
+
 function addContent(content)
 {
     document.getElementById('main-content-container').appendChild(content);
 }
 
 function a(){
-    let tasks = document.getElementsByClassName('task-element');
 
+    let tasks = document.getElementsByClassName('task-element');
     for(let i = 0; i < tasks.length; i++)
     {
         let task = tasks[i];
@@ -108,16 +114,15 @@ function a(){
 
         task.addEventListener('dragstart', function(event){
             event.currentTarget.classList.add('dragged');
+            event.dataTransfer.setData('text/plain', event.currentTarget.children[0].id);
         });
 
         task.addEventListener('drag', function(event){
-
+            //TODO - put a picture for the dragged element
         });
 
         task.addEventListener('dragend', function(event){
             event.currentTarget.classList.remove('dragged');
-
-            console.log(event.target.parentNode.contains(event.srcElement));
         });
     }
 
@@ -128,17 +133,24 @@ function a(){
 
         column.addEventListener('drop', function(event){
 
-        });
+            event.preventDefault();
 
-        column.addEventListener('dragenter', function(event){
+            let dragged_element = document.getElementById(event.dataTransfer.getData('text'));
+            dragged_element.closest('li').remove();
+            event.target.closest('.status-column').appendChild(dragged_element);
+            event.dataTransfer.clearData();
         });
 
         column.addEventListener('dragover', function(event){
+            event.preventDefault();
+        });
 
+        column.addEventListener('dragenter', function(event){
+            //TODO - add an animation to show it will be dropped where it should
         });
 
         column.addEventListener('dragleave', function(event){
-
+            //TODO - second part of the animation of the dragenter event
         });
     }
 

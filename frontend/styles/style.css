@@ -5,13 +5,13 @@ body {
     font-family: Consolas;
 
     overflow: hidden;
-/*
+
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-*/
+
 }
 
 ul {
@@ -103,6 +103,16 @@ ul > li > ul {
     background-color: lightskyblue;
 }
 
+.task-element > div:hover{
+    transition: background-color 1s ease;
+
+    background-color: #ccc;
+}
+
 .dragged{
-    background-color: yellow;
+
+    transition: background-color 0.5s ease, color 0.5s ease;
+
+    background-color: #aaa;
+    color: white;
 }
