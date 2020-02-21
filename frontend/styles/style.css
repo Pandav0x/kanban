@@ -2,7 +2,7 @@ body {
 
     background-image: linear-gradient(to right, deepskyblue, dodgerblue);
 
-    font-family: Consolas;
+    font-family: Consolas, sans-serif;
 
     overflow: hidden;
 

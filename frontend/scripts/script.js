@@ -20,65 +20,76 @@ document.addEventListener("DOMContentLoaded", function(){
                    let tasks = JSON.parse(unparsed_tasks);
 
                    tasks.forEach(function(task){
-                       let task_element, task_name, task_element_content;
-
                        if(task.project !== null){
-                           if(document.getElementById(status.name + '-' + task.project.name) !== null){
-
-                               //TODO: refactor those 4 lines (that are in the else as well)
-                               task_element = document.createElement('li');
-                               task_name = document.createTextNode(task.name);
-                               task_element_content = document.createElement('div');
-                               task_element_content.id = getRandomString();
-                               task_element_content.appendChild(task_name);
-                               task_element.appendChild(task_element_content);
-                               task_element.classList.add('task-element');
-                               task_element_content.setAttribute('draggable', 'true');
-                               document.getElementById(status.name + '-' + task.project.name).appendChild(task_element);
-
-                           } else {
-
-                               let project_container = document.createElement('li');
-                               let project_name_container = document.createElement('span');
-                               let project_name = document.createTextNode(task.project.name);
-                               project_name_container.appendChild(project_name);
-                               project_name_container.classList.add('project-title');
-                               project_container.appendChild(project_name_container);
-                               let project_container_content = document.createElement('ul');
-
-                               project_container_content.setAttribute('id', status.name + '-' + task.project.name);
-                               project_container_content.classList.add('project-container');
-                               task_element = document.createElement('li');
-                               task_element_content = document.createElement('div');
-                               task_element_content.id = getRandomString();
-                               task_name = document.createTextNode(task.name);
-                               task_element_content.setAttribute('draggable', 'true');
-                               task_element_content.appendChild(task_name);
-                               task_element.appendChild(task_element_content);
-                               task_element.classList.add('task-element');
-                               project_container_content.appendChild(task_element);
-
-                               project_container.appendChild(project_container_content);
-                               status_tasks.appendChild(project_container);
-                           }
+                           addTaskToStatus(status, task);
                        }
                    });
-                    a();
+                    bindDragNDropEvents();
                 });
 
                 let status_inner_text_container = document.createElement('h2');
                 let status_inner_text = document.createTextNode(status.name);
-                status_inner_text_container.appendChild(status_inner_text);
 
+                status_inner_text_container.appendChild(status_inner_text);
                 status_column.appendChild(status_inner_text_container);
                 status_column.appendChild(status_tasks);
-                addContent(status_column);
+
+                document.getElementById('main-content-container').appendChild(status_column);
             });
 
         });
 });
 
-function b(){}
+function addTaskToStatus(status, task){
+
+    console.log('coucou');
+
+    let task_element, task_name, task_element_content, project_container_content;
+
+    task_element = document.createElement('li');
+    task_name = document.createTextNode(task.name);
+    task_element_content = document.createElement('div');
+    task_element_content.id = getRandomString();
+    task_element_content.setAttribute('draggable', 'true');
+    task_element_content.appendChild(task_name);
+    task_element.appendChild(task_element_content);
+    task_element.classList.add('task-element');
+
+    if((project_container_content = document.getElementById(status.name + '-' + task.project.name)) === null) {
+
+        let project_container = document.createElement('li');
+        let project_name_container = document.createElement('span');
+        let project_name = document.createTextNode(task.project.name);
+
+        project_container_content = document.createElement('ul');
+        project_container_content.setAttribute('id', status.name + '-' + task.project.name);
+        project_container_content.classList.add('project-container');
+
+        project_name_container.appendChild(project_name);
+        project_name_container.classList.add('project-title');
+        project_container.appendChild(project_name_container);
+    }
+
+    project_container_content.appendChild(task_element);
+
+    return project_container_content;
+}
+
+function createElementWithText(div, text, attributes = [])
+{
+    let element;
+    attributes.forEach(function(attributeName, attributeValue){
+        switch(attributeName){
+            case 'id':
+                element.id = attributeValue;
+                break;
+            default:
+                element.setAttribute(attributeName, attributeValue);
+                break;
+        }
+    });
+    return element;
+}
 
 function ajax(url, protocol, callback)
 {
@@ -97,12 +108,7 @@ function getRandomString()
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
 
-function addContent(content)
-{
-    document.getElementById('main-content-container').appendChild(content);
-}
-
-function a(){
+function bindDragNDropEvents(){
 
     let tasks = document.getElementsByClassName('task-element');
     for(let i = 0; i < tasks.length; i++)
@@ -146,11 +152,11 @@ function a(){
         });
 
         column.addEventListener('dragenter', function(event){
-            //TODO - add an animation to show it will be dropped where it should
+            //TODO: add an animation to show it will be dropped where it should
         });
 
         column.addEventListener('dragleave', function(event){
-            //TODO - second part of the animation of the dragenter event
+            //TODO: second part of the animation of the dragenter event
         });
     }
 
