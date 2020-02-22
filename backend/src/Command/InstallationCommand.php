@@ -20,19 +20,12 @@ class InstallationCommand extends Command
     protected static $defaultName = 'application:install';
 
     /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
      * InstallationCommand constructor.
      * @param null $name
-     * @param EntityManagerInterface $entityManager
      */
-    public function __construct($name = null, EntityManagerInterface $entityManager)
+    public function __construct($name = null)
     {
         parent::__construct($name);
-        $this->entityManager = $entityManager;
     }
 
     public function configure(): void
@@ -51,36 +44,32 @@ class InstallationCommand extends Command
 
         $io->title('Installing project for [' . $_ENV['APP_ENV'] . ']');
 
-        preg_match('/([0-9]{1,3}\.){3}[0-9]{1,3}/', $_ENV['DATABASE_URL'], $matches);
+        preg_match('/(\d{1,3}\.){3}\d{1,3}/', $_ENV['DATABASE_URL'], $matches);
         $dbIP = array_shift($matches);
-        preg_match('/(?<=\:)[0-9]{1,4}/', $_ENV['DATABASE_URL'], $matches);
+        preg_match('/(?<=\:)\d{1,4}/', $_ENV['DATABASE_URL'], $matches);
         $dbPort = array_shift($matches);
 
         $isDatabaseOn = is_resource(@fsockopen($dbIP, $dbPort));
+
         if($isDatabaseOn)
         {
             $io->write(str_pad('doctrine:database:drop --force', 40));
             Process::fromShellCommandline('php bin/console doctrine:database:drop --force')->run();
             $io->writeln('<fg=green>[OK]</>');
+
             $io->write(str_pad('doctrine:database:create', 40));
             Process::fromShellCommandline('php bin/console doctrine:database:create')->run();
             $io->writeln('<fg=green>[OK]</>');
+
             $io->write(str_pad('doctrine:migration:migrate -q', 40));
             Process::fromShellCommandline('php bin/console doctrine:migration:migrate -q')->run();
             $io->writeln('<fg=green>[OK]</>');
 
-            $defaultStatuses = ['TODO', 'DOING', 'DONE'];
-
-            foreach ($defaultStatuses as $defaultStatus)
-            {
-                $status = new Status();
-                $status->setName($defaultStatus);
-
-                $this->entityManager->persist($status);
+            if($_ENV['APP_ENV'] === 'dev') {
+                $io->write(str_pad('doctrine:fixtures:load -q', 40));
+                Process::fromShellCommandline('php bin/console doctrine:fixtures:load -q')->run();
+                $io->writeln('<fg=green>[OK]</>');
             }
-            $this->entityManager->flush();
-
-            $io->writeln('<fg=green>[OK]</>');
         }
         $io->success('Installation complete.');
 
