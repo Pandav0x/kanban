@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function(){
             statuses.forEach(function(status){
                 let status_column = document.createElement('div');
                 status_column.setAttribute('class', 'status-column');
+                status_column.setAttribute('id', );
                 let status_tasks = document.createElement('ul');
 
                 let promise_tasks =  new Promise((resolve) => { ajax('/status/' + status.id + '/task', 'GET', resolve); });
@@ -20,8 +21,47 @@ document.addEventListener("DOMContentLoaded", function(){
                    let tasks = JSON.parse(unparsed_tasks);
 
                    tasks.forEach(function(task){
+                       let task_element, task_name, task_element_content;
+
                        if(task.project !== null){
-                           addTaskToStatus(status, task);
+                           if(document.getElementById(status.name + '-' + task.project.name) !== null){
+
+                               //TODO: refactor those 4 lines (that are in the else as well)
+                               task_element = document.createElement('li');
+                               task_name = document.createTextNode(task.name);
+                               task_element_content = document.createElement('div');
+                               task_element_content.id = getRandomString();
+                               task_element_content.appendChild(task_name);
+                               task_element.appendChild(task_element_content);
+                               task_element.classList.add('task-element');
+                               task_element_content.setAttribute('draggable', 'true');
+                               document.getElementById(status.name + '-' + task.project.name).appendChild(task_element);
+
+                           } else {
+
+                               let project_container = document.createElement('li');
+                               let project_name_container = document.createElement('span');
+                               let project_name = document.createTextNode(task.project.name);
+                               project_name_container.appendChild(project_name);
+                               project_name_container.classList.add('project-title');
+                               project_container.appendChild(project_name_container);
+                               let project_container_content = document.createElement('ul');
+
+                               project_container_content.setAttribute('id', status.name + '-' + task.project.name);
+                               project_container_content.classList.add('project-container');
+                               task_element = document.createElement('li');
+                               task_element_content = document.createElement('div');
+                               task_element_content.id = getRandomString();
+                               task_name = document.createTextNode(task.name);
+                               task_element_content.setAttribute('draggable', 'true');
+                               task_element_content.appendChild(task_name);
+                               task_element.appendChild(task_element_content);
+                               task_element.classList.add('task-element');
+                               project_container_content.appendChild(task_element);
+
+                               project_container.appendChild(project_container_content);
+                               status_tasks.appendChild(project_container);
+                           }
                        }
                    });
                     bindDragNDropEvents();
@@ -40,57 +80,6 @@ document.addEventListener("DOMContentLoaded", function(){
         });
 });
 
-function addTaskToStatus(status, task){
-
-    console.log('coucou');
-
-    let task_element, task_name, task_element_content, project_container_content;
-
-    task_element = document.createElement('li');
-    task_name = document.createTextNode(task.name);
-    task_element_content = document.createElement('div');
-    task_element_content.id = getRandomString();
-    task_element_content.setAttribute('draggable', 'true');
-    task_element_content.appendChild(task_name);
-    task_element.appendChild(task_element_content);
-    task_element.classList.add('task-element');
-
-    if((project_container_content = document.getElementById(status.name + '-' + task.project.name)) === null) {
-
-        let project_container = document.createElement('li');
-        let project_name_container = document.createElement('span');
-        let project_name = document.createTextNode(task.project.name);
-
-        project_container_content = document.createElement('ul');
-        project_container_content.setAttribute('id', status.name + '-' + task.project.name);
-        project_container_content.classList.add('project-container');
-
-        project_name_container.appendChild(project_name);
-        project_name_container.classList.add('project-title');
-        project_container.appendChild(project_name_container);
-    }
-
-    project_container_content.appendChild(task_element);
-
-    return project_container_content;
-}
-
-function createElementWithText(div, text, attributes = [])
-{
-    let element;
-    attributes.forEach(function(attributeName, attributeValue){
-        switch(attributeName){
-            case 'id':
-                element.id = attributeValue;
-                break;
-            default:
-                element.setAttribute(attributeName, attributeValue);
-                break;
-        }
-    });
-    return element;
-}
-
 function ajax(url, protocol, callback)
 {
     let xhr = new XMLHttpRequest();
@@ -108,7 +97,16 @@ function getRandomString()
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
 
-function bindDragNDropEvents(){
+function addTaskToStatus(status, task)
+{
+    console.log(status, task);
+
+
+    return 'mais t\'avais dit qu\'on ferait des knackis ://///';
+}
+
+function bindDragNDropEvents()
+{
 
     let tasks = document.getElementsByClassName('task-element');
     for(let i = 0; i < tasks.length; i++)
@@ -160,4 +158,31 @@ function bindDragNDropEvents(){
         });
     }
 
+}
+
+//TODO - use it (when addTaskToStatus will be working as intended)
+function createElementWithText(tag, text = null, attributes = [])
+{
+    let element = document.createElement(tag);
+
+    if(text !== null){
+        let element_text = document.createTextNode(text);
+        element.appendChild(element_text);
+    }
+
+    for(let attributeName in attributes){
+        switch(attributeName){
+            case 'id':
+                element.id = attributes[attributeName];
+                break;
+            case 'class':
+                element.classList.add(attributes[attributeName]);
+                break;
+            default:
+                element.setAttribute(attributeName, attributes[attributeName]);
+                break;
+        }
+    }
+
+    return element;
 }
