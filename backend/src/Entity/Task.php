@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TaskRepository")
@@ -13,26 +14,31 @@ class Task
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups("jsonable")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("jsonable")
      */
     private $name;
 
     /**
      * @ORM\Column(type="date_immutable")
+     * @Groups("jsonable")
      */
     private $creationDate;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Status", inversedBy="tasks")
+     * @Groups("jsonable")
      */
     private $status;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Project", inversedBy="tasks")
+     * @Groups("jsonable")
      */
     private $project;
 
