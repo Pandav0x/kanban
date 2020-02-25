@@ -64,7 +64,7 @@ class TaskController extends CustomController
      */
     public function readAll(): JsonResponse
     {
-        return new JsonResponse($this->serializer->serialize(
+        return (new JsonResponse())->setContent($this->serializer->serialize(
             $this->em->getRepository(Task::class)->findAll(),
             'json',
             ['groups' => ['jsonable']]
