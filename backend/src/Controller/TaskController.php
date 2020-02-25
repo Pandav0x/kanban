@@ -141,23 +141,13 @@ class TaskController extends CustomController
     public function setStatus(?Task $task, ?Status $status): JsonResponse
     {
         if($task === null || $status === null){
-            return new JsonResponse([
-                'code' => 404,
-                'message' => 'Could not find the specified task nor status.'
-            ]);
+            return $this->json('', 501);
         }
 
         $task->setStatus($status);
         $this->em->flush();
 
-        return new JsonResponse([
-            'code' => 200,
-            'message' => sprintf(
-                '%d task has been set to status %s.',
-                $task->getId(),
-                $status->getName()
-            )
-        ]);
+        return $this->json('');
     }
 
     /**
