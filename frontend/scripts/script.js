@@ -163,9 +163,14 @@ function displayTasks()
                         {'draggable': 'true'}
                     ]));
 
-            task_project.appendChild(task_element);
+            if(document.querySelector('#task-' + task.id) !== null ||
+                task_status.querySelector('#task-' + task.id) !== null) {
+                continue;
+            }
 
+            task_project.appendChild(task_element);
         }
+        bindDragNDropEvents();
     });
 }
 
@@ -181,7 +186,7 @@ function bindDragNDropEvents()
 
         task.addEventListener('dragstart', function(event){
             event.currentTarget.classList.add('dragged');
-            event.dataTransfer.setData('text/plain', event.currentTarget.children[0].id);
+            event.dataTransfer.setData('text/plain', event.currentTarget.id);
         });
 
         task.addEventListener('drag', function(event){
@@ -202,12 +207,18 @@ function bindDragNDropEvents()
 
             event.preventDefault();
 
-            let dragged_element = document.getElementById(event.dataTransfer.getData('text'));
-            //dragged_element.closest('li').remove();
-            event.target.closest('.status-column').appendChild(dragged_element);
+            let dragged_task = document.getElementById(event.dataTransfer.getData('text'));
+            dragged_task.closest('li').remove();
 
-            addTaskToStatus(dragged_element, event.target.closest('.status-column'));
-            display();
+            let destination_status = event.target.closest('.status-column');
+
+            let task_status_update = new Promise((resolve) => {
+                ajax('/task/' + getBackendId(dragged_task) + '/set/project/' + getBackendId(destination_status), null, resolve)
+            });
+
+            Promise.resolve(task_status_update).then((result) => {
+                displayTasks();
+            });
 
             event.dataTransfer.clearData();
         });
