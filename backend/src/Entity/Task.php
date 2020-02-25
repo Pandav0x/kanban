@@ -25,12 +25,6 @@ class Task
     private $name;
 
     /**
-     * @ORM\Column(type="date_immutable")
-     * @Groups("jsonable")
-     */
-    private $creationDate;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Status", inversedBy="tasks")
      * @Groups("jsonable")
      */
@@ -60,18 +54,6 @@ class Task
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getCreationDate(): ?\DateTimeImmutable
-    {
-        return $this->creationDate;
-    }
-
-    public function setCreationDate(\DateTimeImmutable $creationDate): self
-    {
-        $this->creationDate = $creationDate;
 
         return $this;
     }

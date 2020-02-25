@@ -20,7 +20,6 @@ class TaskFixture extends BaseFixture implements DependentFixtureInterface
         $this->createMany($this->faker->numberBetween(50, 100), 'task', function(){
             $task = new Task();
             $task->setName($this->faker->sentence($this->faker->numberBetween(4, 8), false))
-                ->setCreationDate(DateTimeImmutable::createFromMutable($this->faker->dateTime()))
                 ->setDescription($this->faker->sentence($this->faker->numberBetween(50, 200), false))
                 ->setStatus($this->getRandomReference('status'))
                 ->setProject($this->getRandomReference('project'));
