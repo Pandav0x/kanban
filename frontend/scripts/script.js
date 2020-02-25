@@ -107,7 +107,8 @@ function display()
 
 }
 
-function displayStatuses() {
+function displayStatuses()
+{
     let promise_statuses = new Promise((resolve) => {
         ajax('/status', 'GET', resolve);
     });
@@ -122,15 +123,54 @@ function displayStatuses() {
                     {'id': 'status-' + status.id},
                     {'class': 'status-column'}
                 ]);
+                status_column.appendChild(createElement('h2', status.name));
 
                 document.getElementById('main-content-container').appendChild(status_column);
             });
+            displayTasks();
         });
+}
+
+function displayTasks()
+{
+    let promise_tasks = new Promise((resolve) => {
+        ajax('/task', 'GET', resolve);
+    });
+
+    Promise.resolve(promise_tasks).then((unparsed_tasks) => {
+        let tasks = JSON.parse(unparsed_tasks);
+
+        for(let i = 0; i < tasks.length; i++)
+        {
+            let task = tasks[i];
+            let task_status = document.getElementById('status-' + task.status.id);
+            let task_project = task_status.querySelector('#status-' + task.status.id + '-project-' + task.project.id);
+
+            if(task_project === null){
+                task_project = createElement('ul', null, [
+                        {'id': 'status-' + task.status.id + '-project-' + task.project.id},
+                        {'class': 'project-container'}]);
+
+                task_project.appendChild(createElement('span', task.project.name, [{'class': 'project-title'}]));
+
+                task_status.appendChild(task_project);
+            }
+
+            let task_element = createElement('li');
+            task_element.appendChild(createElement('div', task.name, [
+                        {'id': 'task-' + task.id},
+                        {'class': 'task-element'},
+                        {'draggable': 'true'}
+                    ]));
+
+            task_project.appendChild(task_element);
+
+        }
+    });
 }
 
 function bindDragNDropEvents()
 {
-
     let tasks = document.getElementsByClassName('task-element');
     for(let i = 0; i < tasks.length; i++)
     {
@@ -184,10 +224,8 @@ function bindDragNDropEvents()
             //TODO: second part of the animation of the dragenter event
         });
     }
-
 }
 
-//TODO - use it (when addTaskToStatus will be working as intended)
 function createElement(tag, text = null, attributes = [])
 {
     let element = document.createElement(tag);
@@ -196,7 +234,6 @@ function createElement(tag, text = null, attributes = [])
         let element_text = document.createTextNode(text);
         element.appendChild(element_text);
     }
-
 
     for(let i = 0; i < attributes.length; i++){
         for(let attributeName in attributes[i]){
