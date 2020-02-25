@@ -213,7 +213,7 @@ function bindDragNDropEvents()
             let destination_status = event.target.closest('.status-column');
 
             let task_status_update = new Promise((resolve) => {
-                ajax('/task/' + getBackendId(dragged_task) + '/set/project/' + getBackendId(destination_status), null, resolve)
+                ajax('/task/' + getBackendId(dragged_task) + '/set/status/' + getBackendId(destination_status), 'GET', resolve)
             });
 
             Promise.resolve(task_status_update).then((result) => {
