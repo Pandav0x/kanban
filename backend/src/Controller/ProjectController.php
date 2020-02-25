@@ -15,6 +15,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ProjectController extends CustomController
 {
+    //TODO - cleanup a bit
+
     /**
      * @Route("/", methods={"POST"})
      * @param Request $request

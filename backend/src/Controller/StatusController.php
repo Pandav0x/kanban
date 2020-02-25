@@ -16,6 +16,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class StatusController extends CustomController
 {
+    //TODO - cleanup a bit
+
     /**
      * @Route("/", methods={"POST"})
      * @param Request $request

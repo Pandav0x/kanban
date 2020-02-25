@@ -16,6 +16,8 @@ use Symfony\Component\Serializer\Serializer;
 
 class CustomController extends AbstractController
 {
+    //TODO - cleanup and refactor / I think there is some chunks of code we can get rid of
+
     /**
      * @var Serializer
      */
