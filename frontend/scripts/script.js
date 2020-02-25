@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function(){
             statuses.forEach(function(status){
                 let status_column = document.createElement('div');
                 status_column.setAttribute('class', 'status-column');
-                status_column.setAttribute('id', );
+                status_column.setAttribute('id', 'status-' + status.id);
                 let status_tasks = document.createElement('ul');
 
                 let promise_tasks =  new Promise((resolve) => { ajax('/status/' + status.id + '/task', 'GET', resolve); });
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function(){
                                task_element = document.createElement('li');
                                task_name = document.createTextNode(task.name);
                                task_element_content = document.createElement('div');
-                               task_element_content.id = getRandomString();
+                               task_element_content.id = 'task-' + task.id;
                                task_element_content.appendChild(task_name);
                                task_element.appendChild(task_element_content);
                                task_element.classList.add('task-element');
@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function(){
                                project_container_content.classList.add('project-container');
                                task_element = document.createElement('li');
                                task_element_content = document.createElement('div');
-                               task_element_content.id = getRandomString();
+                               task_element_content.id = 'task-' + task.id;
                                task_name = document.createTextNode(task.name);
                                task_element_content.setAttribute('draggable', 'true');
                                task_element_content.appendChild(task_name);
@@ -97,12 +97,20 @@ function getRandomString()
     return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
 
-function addTaskToStatus(status, task)
+function addTaskToStatus(task, status)
 {
-    console.log(status, task);
+    let update_promise = new Promise((resolve) => { ajax('/task/' + getBackendId(task) + '/set/status/' + getBackendId(status), 'POST', resolve); });
 
+    Promise.resolve(update_promise).then((response) => {
+        console.log('task ' + getBackendId(task) + ' updated to ' + getBackendId(status) + ' status');
+    });
 
     return 'mais t\'avais dit qu\'on ferait des knackis ://///';
+}
+
+function getBackendId(element)
+{
+    return element.id.substr(element.id.lastIndexOf('-') + 1);
 }
 
 function bindDragNDropEvents()
@@ -140,8 +148,11 @@ function bindDragNDropEvents()
             event.preventDefault();
 
             let dragged_element = document.getElementById(event.dataTransfer.getData('text'));
-            dragged_element.closest('li').remove();
+            //dragged_element.closest('li').remove();
             event.target.closest('.status-column').appendChild(dragged_element);
+
+            addTaskToStatus(dragged_element, event.target.closest('.status-column'));
+
             event.dataTransfer.clearData();
         });
 
