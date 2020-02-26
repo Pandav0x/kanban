@@ -1,7 +1,20 @@
 let apiUrl = 'http://127.0.0.1:8000';
 
 document.addEventListener("DOMContentLoaded", function(){
-    displayStatuses();
+    let status_promise = new Promise((resolve) => {
+        displayStatuses(resolve);
+    });
+
+    let task_promise = new Promise((resolve) => {
+        displayTasks(resolve);
+    });
+
+    Promise.resolve(status_promise)
+        .then(() => {
+            Promise.resolve(task_promise).then(()=> {
+                bindDragNDropEvents();
+            })
+        });
 });
 
 function ajax(url, protocol, callback)
@@ -16,98 +29,12 @@ function ajax(url, protocol, callback)
     xhr.send();
 }
 
-function getRandomString()
-{
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-}
-
-function addTaskToStatus(task, status)
-{
-    let update_promise = new Promise((resolve) => { ajax('/task/' + getBackendId(task) + '/set/status/' + getBackendId(status), 'POST', resolve); });
-
-    Promise.resolve(update_promise).then((response) => {
-        console.log('task ' + getBackendId(task) + ' updated to ' + getBackendId(status) + ' status');
-    });
-
-    return 'mais t\'avais dit qu\'on ferait des knackis ://///';
-}
-
 function getBackendId(element)
 {
     return element.id.substr(element.id.lastIndexOf('-') + 1);
 }
 
-function display()
-{
-
-    /*
-    let status_tasks = document.createElement('ul'); // <-- which should be "status_projects", but as it is minor...
-
-    let promise_tasks =  new Promise((resolve) => { ajax('/status/' + status.id + '/task', 'GET', resolve); });
-
-    Promise.resolve(promise_tasks).then((unparsed_tasks) => {
-        let tasks = JSON.parse(unparsed_tasks);
-
-        tasks.forEach(function(task){
-            let task_element, task_name, task_element_content;
-
-            if(task.project !== null){
-                if(document.getElementById(status.name + '-' + task.project.name) !== null){
-
-                    //TODO: refactor those 4 lines (that are in the else as well)
-                    task_element = document.createElement('li');
-                    task_name = document.createTextNode(task.name);
-                    task_element_content = document.createElement('div');
-                    task_element_content.id = 'task-' + task.id;
-                    task_element_content.appendChild(task_name);
-                    task_element.appendChild(task_element_content);
-                    task_element.classList.add('task-element');
-                    task_element_content.setAttribute('draggable', 'true');
-                    document.getElementById(status.name + '-' + task.project.name).appendChild(task_element);
-
-                } else {
-
-                    let project_container = document.createElement('li');
-                    let project_name_container = document.createElement('span');
-                    let project_name = document.createTextNode(task.project.name);
-                    project_name_container.appendChild(project_name);
-                    project_name_container.classList.add('project-title');
-                    project_container.appendChild(project_name_container);
-                    let project_container_content = document.createElement('ul');
-
-                    project_container_content.setAttribute('id', status.name + '-' + task.project.name);
-                    project_container_content.classList.add('project-container');
-                    task_element = document.createElement('li');
-                    task_element_content = document.createElement('div');
-                    task_element_content.id = 'task-' + task.id;
-                    task_name = document.createTextNode(task.name);
-                    task_element_content.setAttribute('draggable', 'true');
-                    task_element_content.appendChild(task_name);
-                    task_element.appendChild(task_element_content);
-                    task_element.classList.add('task-element');
-                    project_container_content.appendChild(task_element);
-
-                    project_container.appendChild(project_container_content);
-                    status_tasks.appendChild(project_container);
-                }
-            }
-        });
-        bindDragNDropEvents();
-    });
-
-    let status_inner_text_container = document.createElement('h2');
-    let status_inner_text = document.createTextNode(status.name);
-
-    status_inner_text_container.appendChild(status_inner_text);
-    status_column.appendChild(status_inner_text_container);
-    status_column.appendChild(status_tasks);
-
-
-    */
-
-}
-
-function displayStatuses()
+function displayStatuses(callback)
 {
     let promise_statuses = new Promise((resolve) => {
         ajax('/status', 'GET', resolve);
@@ -129,9 +56,11 @@ function displayStatuses()
             });
             displayTasks();
         });
+    callback(); //TODO - go to the church and ask the bishop why this isn't working ffs
 }
 
-function displayTasks()
+//TODO - Add a status argument to not fetch all tasks from all status on refresh after drop
+function displayTasks(callback)
 {
     let promise_tasks = new Promise((resolve) => {
         ajax('/task', 'GET', resolve);
@@ -170,7 +99,7 @@ function displayTasks()
 
             task_project.appendChild(task_element);
         }
-        bindDragNDropEvents();
+        callback();
     });
 }
 
@@ -204,18 +133,26 @@ function bindDragNDropEvents()
         let column = columns[i];
 
         column.addEventListener('drop', function(event){
-
             event.preventDefault();
 
             let dragged_task = document.getElementById(event.dataTransfer.getData('text'));
-            dragged_task.closest('li').remove();
+
+            if(dragged_task !== null){
+
+                if(dragged_task.closest('.project-container').children.length === 2){//The span + the not yet removed div
+                    dragged_task.closest('.project-container').remove();
+                }
+
+                dragged_task.closest('li').remove();
+            }
+
+
 
             let destination_status = event.target.closest('.status-column');
 
             let task_status_update = new Promise((resolve) => {
                 ajax('/task/' + getBackendId(dragged_task) + '/set/status/' + getBackendId(destination_status), 'GET', resolve)
             });
-
             Promise.resolve(task_status_update).then((result) => {
                 displayTasks();
             });
@@ -228,11 +165,11 @@ function bindDragNDropEvents()
         });
 
         column.addEventListener('dragenter', function(event){
-            //TODO: add an animation to show it will be dropped where it should
+            //TODO - add an animation to show it will be dropped where it should
         });
 
         column.addEventListener('dragleave', function(event){
-            //TODO: second part of the animation of the dragenter event
+            //TODO - second part of the animation of the dragenter event
         });
     }
 }
