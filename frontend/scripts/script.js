@@ -118,7 +118,7 @@ function displayStatuses()
                     {'id': 'status-' + status.id},
                     {'class': 'status-column'}
                 ]);
-                status_column.appendChild(createElement('h2', status.name));
+                status_column.appendChild(createElement('h2', status.name, [{'class': 'neon-white-red'}]));
 
                 document.getElementById('main-content-container').appendChild(status_column);
             });
@@ -147,7 +147,8 @@ function displayTasks()
             if(task_project === null){
                 task_project = createElement('ul', null, [
                         {'id': 'status-' + task.status.id + '-project-' + task.project.id},
-                        {'class': 'project-container'}]);
+                        {'class': 'project-container'}
+                    ]);
 
                 task_project.appendChild(createElement('span', task.project.name, [{'class': 'project-title'}]));
 
@@ -158,6 +159,7 @@ function displayTasks()
             task_element.appendChild(createElement('div', task.name, [
                         {'id': 'task-' + task.id},
                         {'class': 'task-element'},
+                        //{'class': 'neon-blue-white'},
                         {'draggable': 'true'}
                     ]));
 
