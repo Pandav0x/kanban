@@ -1,6 +1,7 @@
 let apiUrl = 'http://127.0.0.1:8000';
 
 document.addEventListener("DOMContentLoaded", function(){
+
     let status_promise = new Promise(() => {
         displayStatuses();
     });
@@ -22,23 +23,10 @@ document.addEventListener('dragstart', function(event){
     event.dataTransfer.setData('text/plain', event.target.id);
 });
 
-document.addEventListener('drag', function(event){
-    if(!event.target.closest('.task-element'))
-        return;
-    return;
-    //TODO - put a picture for the dragged element
-});
-
 document.addEventListener('dragend', function(event){
     if(!event.target.closest('.task-element'))
         return;
     event.target.classList.remove('dragged');
-});
-
-document.addEventListener('dragover', function(event){
-    if(!event.target.closest('.status-column'))
-        return;
-    event.preventDefault();
 });
 
 document.addEventListener('drop', function(event){
@@ -67,20 +55,6 @@ document.addEventListener('drop', function(event){
     });
 
     event.dataTransfer.clearData();
-});
-
-document.addEventListener('dragenter', function(event){
-    if(!event.target.closest('.status-column'))
-        return;
-    return;
-    //TODO - add an animation to show it will be dropped where it should
-});
-
-document.addEventListener('dragleave', function(event){
-    if(!event.target.closest('.status-column'))
-        return;
-    return;
-    //TODO - second part of the animation of the dragenter event
 });
 
 function ajax(url, protocol, callback)
