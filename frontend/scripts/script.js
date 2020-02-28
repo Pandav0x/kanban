@@ -11,10 +11,76 @@ document.addEventListener("DOMContentLoaded", function(){
 
     Promise.resolve(status_promise)
         .then(() => {
-            Promise.resolve(task_promise).then(()=> {
-                bindDragNDropEvents();
-            })
+            Promise.resolve(task_promise).then(()=> {});
         });
+});
+
+document.addEventListener('dragstart', function(event){
+    if(!event.target.closest('.task-element'))
+        return;
+    event.target.classList.add('dragged');
+    event.dataTransfer.setData('text/plain', event.currentTarget.id);
+});
+
+document.addEventListener('drag', function(event){
+    if(!event.target.closest('.task-element'))
+        return;
+    return;
+    //TODO - put a picture for the dragged element
+});
+
+document.addEventListener('dragend', function(event){
+    if(!event.target.closest('.task-element'))
+        return;
+    event.target.classList.remove('dragged');
+});
+
+document.addEventListener('dragover', function(event){
+    if(!event.target.closest('.status-column'))
+        return;
+    event.preventDefault();
+});
+
+document.addEventListener('drop', function(event){
+    if(!event.target.closest('.status-column'))
+        return;
+    event.preventDefault();
+
+    let dragged_task = document.getElementById(event.dataTransfer.getData('text'));
+
+    if(dragged_task !== null){
+
+        if(dragged_task.closest('.project-container').children.length === 2){//The span + the not yet removed div
+            dragged_task.closest('.project-container').remove();
+        }
+
+        dragged_task.closest('li').remove();
+    }
+
+    let destination_status = event.target.closest('.status-column');
+
+    let task_status_update = new Promise((resolve) => {
+        ajax('/task/' + getBackendId(dragged_task) + '/set/status/' + getBackendId(destination_status), 'GET', resolve)
+    });
+    Promise.resolve(task_status_update).then((result) => {
+        displayTasks();
+    });
+
+    event.dataTransfer.clearData();
+});
+
+document.addEventListener('dragenter', function(event){
+    if(!event.target.closest('.status-column'))
+        return;
+    return;
+    //TODO - add an animation to show it will be dropped where it should
+});
+
+document.addEventListener('dragleave', function(event){
+    if(!event.target.closest('.status-column'))
+        return;
+    return;
+    //TODO - second part of the animation of the dragenter event
 });
 
 function ajax(url, protocol, callback)
@@ -31,6 +97,7 @@ function ajax(url, protocol, callback)
 
 function getBackendId(element)
 {
+    console.log(element)
     return element.id.substr(element.id.lastIndexOf('-') + 1);
 }
 
@@ -73,6 +140,7 @@ function displayTasks(callback)
         {
             let task = tasks[i];
             let task_status = document.getElementById('status-' + task.status.id);
+            console.log(task_status, 'status-' + task.status.id);
             let task_project = task_status.querySelector('#status-' + task.status.id + '-project-' + task.project.id);
 
             if(task_project === null){
@@ -101,77 +169,6 @@ function displayTasks(callback)
         }
         callback();
     });
-}
-
-function bindDragNDropEvents()
-{
-    let tasks = document.getElementsByClassName('task-element');
-    for(let i = 0; i < tasks.length; i++)
-    {
-        let task = tasks[i];
-        task.addEventListener('dblclick', function(){
-            console.log('clicked !');
-        });
-
-        task.addEventListener('dragstart', function(event){
-            event.currentTarget.classList.add('dragged');
-            event.dataTransfer.setData('text/plain', event.currentTarget.id);
-        });
-
-        task.addEventListener('drag', function(event){
-            //TODO - put a picture for the dragged element
-        });
-
-        task.addEventListener('dragend', function(event){
-            event.currentTarget.classList.remove('dragged');
-        });
-    }
-
-    let columns = document.getElementsByClassName('status-column');
-    for(let i = 0; i < columns.length; i++)
-    {
-        let column = columns[i];
-
-        column.addEventListener('drop', function(event){
-            event.preventDefault();
-
-            let dragged_task = document.getElementById(event.dataTransfer.getData('text'));
-
-            if(dragged_task !== null){
-
-                if(dragged_task.closest('.project-container').children.length === 2){//The span + the not yet removed div
-                    dragged_task.closest('.project-container').remove();
-                }
-
-                dragged_task.closest('li').remove();
-            }
-
-
-
-            let destination_status = event.target.closest('.status-column');
-
-            let task_status_update = new Promise((resolve) => {
-                ajax('/task/' + getBackendId(dragged_task) + '/set/status/' + getBackendId(destination_status), 'GET', resolve)
-            });
-            Promise.resolve(task_status_update).then((result) => {
-                displayTasks();
-            });
-
-            event.dataTransfer.clearData();
-        });
-
-        column.addEventListener('dragover', function(event){
-            event.preventDefault();
-        });
-
-        column.addEventListener('dragenter', function(event){
-            //TODO - add an animation to show it will be dropped where it should
-        });
-
-        column.addEventListener('dragleave', function(event){
-            //TODO - second part of the animation of the dragenter event
-        });
-    }
 }
 
 function createElement(tag, text = null, attributes = [])
