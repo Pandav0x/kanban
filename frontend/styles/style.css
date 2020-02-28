@@ -28,6 +28,47 @@ body {
     user-select: none;
 }
 
+#button-add {
+    color: #FFE900;
+    padding: 0 0.5vh 0.5vh;
+    position: fixed;
+    right: 0;
+}
+
+.hide {
+    position: absolute !important;
+    top: -9999px !important;
+    left: -9999px !important;
+}
+
+#modal-wrapper {
+    position: fixed;
+    left: 40vw;
+    top: 20vh;
+    color: #ff1ec3;
+
+    background: #fff;
+}
+
+.modal-menu-item {
+    background-color: black;
+    color: white;
+}
+
+.modal-menu-item.active {
+    background-color: greenyellow;
+    color: #000;
+}
+
+.modal-tab {
+
+}
+
+#modal-button-confirm {
+    position: absolute;
+    right: 0;
+}
+
 ul {
 
     list-style: none;

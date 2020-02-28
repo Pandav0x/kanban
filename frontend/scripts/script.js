@@ -57,8 +57,35 @@ document.addEventListener('drop', function(event){
     event.dataTransfer.clearData();
 });
 
+//Modal
+document.addEventListener('click', function(event){
+    if(event.target.closest('#button-add')) {
+        document.getElementById('modal-wrapper').classList.toggle('hide');
+    }
+
+    if(event.target.closest('#modal-menu span')) {
+        let modal_tabs = document.getElementById('modal-wrapper').querySelectorAll('.modal-tab');
+        let form_id_toggled = event.target.dataset.toggleId;
+
+        //there is only one active, so no need to use querySelectorAll
+        document.getElementById('modal-menu').querySelector('.active').classList.remove('active');
+
+        event.target.classList.add('active');
+
+        for(let i = 0; i < modal_tabs.length; i++){
+            modal_tabs[i].classList.add('hide');
+        }
+
+        document.getElementById(form_id_toggled).classList.remove('hide');
+    }
+
+    if(event.target.closest('#modal-button-confirm')) {
+        console.warn('yet to be implemented');
+    }
+});
+
 function ajax(url, protocol, callback)
-{
+{``
     let xhr = new XMLHttpRequest();
     xhr.open(protocol, apiUrl + url);
     xhr.onload = function() {
