@@ -1,12 +1,12 @@
 let apiUrl = 'http://127.0.0.1:8000';
 
 document.addEventListener("DOMContentLoaded", function(){
-    let status_promise = new Promise((resolve) => {
-        displayStatuses(resolve);
+    let status_promise = new Promise(() => {
+        displayStatuses();
     });
 
-    let task_promise = new Promise((resolve) => {
-        displayTasks(resolve);
+    let task_promise = new Promise(() => {
+        displayTasks();
     });
 
     Promise.resolve(status_promise)
@@ -19,7 +19,7 @@ document.addEventListener('dragstart', function(event){
     if(!event.target.closest('.task-element'))
         return;
     event.target.classList.add('dragged');
-    event.dataTransfer.setData('text/plain', event.currentTarget.id);
+    event.dataTransfer.setData('text/plain', event.target.id);
 });
 
 document.addEventListener('drag', function(event){
@@ -97,16 +97,17 @@ function ajax(url, protocol, callback)
 
 function getBackendId(element)
 {
-    console.log(element)
+    if(element === null)
+        return;
     return element.id.substr(element.id.lastIndexOf('-') + 1);
 }
 
-function displayStatuses(callback)
+function displayStatuses()
 {
     let promise_statuses = new Promise((resolve) => {
         ajax('/status', 'GET', resolve);
     });
-    Promise.resolve(promise_statuses)
+    return Promise.resolve(promise_statuses)
         .then((unparsed_statuses) => {
 
             let statuses = JSON.parse(unparsed_statuses);
@@ -123,24 +124,24 @@ function displayStatuses(callback)
             });
             displayTasks();
         });
-    callback(); //TODO - go to the church and ask the bishop why this isn't working ffs
 }
 
 //TODO - Add a status argument to not fetch all tasks from all status on refresh after drop
-function displayTasks(callback)
+function displayTasks()
 {
     let promise_tasks = new Promise((resolve) => {
         ajax('/task', 'GET', resolve);
     });
 
-    Promise.resolve(promise_tasks).then((unparsed_tasks) => {
+    return Promise.resolve(promise_tasks).then((unparsed_tasks) => {
         let tasks = JSON.parse(unparsed_tasks);
 
         for(let i = 0; i < tasks.length; i++)
         {
             let task = tasks[i];
             let task_status = document.getElementById('status-' + task.status.id);
-            console.log(task_status, 'status-' + task.status.id);
+            if(task_status === null)
+                continue;
             let task_project = task_status.querySelector('#status-' + task.status.id + '-project-' + task.project.id);
 
             if(task_project === null){
@@ -167,7 +168,6 @@ function displayTasks(callback)
 
             task_project.appendChild(task_element);
         }
-        callback();
     });
 }
 
