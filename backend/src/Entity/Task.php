@@ -38,6 +38,7 @@ class Task
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Groups("all_infos")
      */
     private $description;
 

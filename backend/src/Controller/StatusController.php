@@ -65,7 +65,11 @@ class StatusController extends CustomController
      */
     public function readAll(): JsonResponse
     {
-        return $this->json(json_decode($this->serializer->serialize($this->em->getRepository(Status::class)->findAll(), 'json'), true));
+        return (new JsonResponse())->setContent($this->serializer->serialize(
+            $this->em->getRepository(Status::class)->findAll(),
+            'json',
+            ['groups' => ['jsonable']]
+        ));
     }
 
     /**

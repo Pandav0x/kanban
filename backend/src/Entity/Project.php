@@ -34,6 +34,7 @@ class Project
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Task", mappedBy="project")
+     * @Groups("all_infos")
      */
     private $tasks;
 

@@ -28,6 +28,7 @@ class Status
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Task", mappedBy="status", orphanRemoval=true)
+     * @Groups("all_infos")
      */
     private $tasks;
 
