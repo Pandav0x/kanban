@@ -82,7 +82,8 @@ for(let i = 0; i < modal_menu_button.length; i++){
 }
 
 document.getElementById('modal-button-confirm').addEventListener('click', function(){
-    console.warn('yet to be implemented');
+    let tabName = document.getElementById('modal-menu').querySelector('.active').dataset.name;
+    console.warn('confirm from: ' + tabName);
 });
 
 let project_list_promise = new Promise((resolve) => {
