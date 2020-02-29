@@ -58,12 +58,13 @@ document.addEventListener('drop', function(event){
 });
 
 //Modal
-document.addEventListener('click', function(event){
-    if(event.target.closest('#button-add')) {
-        document.getElementById('modal-wrapper').classList.toggle('hide');
-    }
+document.getElementById('button-add').addEventListener('click', function() {
+    document.getElementById('modal-wrapper').classList.toggle('hide');
+});
 
-    if(event.target.closest('#modal-menu span')) {
+let modal_menu_button = document.getElementsByClassName('modal-menu-item');
+for(let i = 0; i < modal_menu_button.length; i++){
+    modal_menu_button[i].addEventListener('click', function(){
         let modal_tabs = document.getElementById('modal-wrapper').querySelectorAll('.modal-tab');
         let form_id_toggled = event.target.dataset.toggleId;
 
@@ -77,15 +78,15 @@ document.addEventListener('click', function(event){
         }
 
         document.getElementById(form_id_toggled).classList.remove('hide');
-    }
+    });
+}
 
-    if(event.target.closest('#modal-button-confirm')) {
-        console.warn('yet to be implemented');
-    }
+document.getElementById('modal-button-confirm').addEventListener('click', function(){
+    console.warn('yet to be implemented');
 });
 
 function ajax(url, protocol, callback)
-{``
+{
     let xhr = new XMLHttpRequest();
     xhr.open(protocol, apiUrl + url);
     xhr.onload = function() {
