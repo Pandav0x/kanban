@@ -28,10 +28,11 @@ body {
 }
 
 #button-add {
-    color: #FFE900;
     padding: 0 0.5vh 0.5vh;
     position: fixed;
     right: 0;
+
+    color: #FFE900;
 }
 
 .hide {
@@ -42,6 +43,7 @@ body {
     position: fixed;
     left: 40vw;
     top: 20vh;
+
     color: #ff1ec3;
 
     background: #fff;
@@ -105,15 +107,14 @@ ul > li {
 
 .status-column > h2 {
     margin: 0;
-
     padding: 0.5em 0 0 0;
+
     font-family: Monoton, sans-serif;
+    color: white;
 
     background: inherit;
 
     z-index: 2;
-
-    color: white;
 }
 
 .status-column > ul {
@@ -130,7 +131,9 @@ ul > li {
     font-size: 0.75em;
 
     margin: 1em 0 1em 0;
+
     min-height: 4em;
+
     display: flex;
 }
 
@@ -183,11 +186,12 @@ ul > li {
 
 .neon-blue-white {
     text-decoration: none;
+    text-shadow: 0 0 10px #4794ff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #ffffff, 0 0 70px #FF1177, 0 0 80px #FF1177, 0 0 100px #FF1177, 0 0 150px #FF1177;
+
     -webkit-transition: all 0.5s;
     -moz-transition: all 0.5s;
     transition: all 0.5s;
 
-    text-shadow: 0 0 10px #4794ff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #ffffff, 0 0 70px #FF1177, 0 0 80px #FF1177, 0 0 100px #FF1177, 0 0 150px #FF1177;
 }
 
 @-webkit-keyframes neonWhiteRed {
