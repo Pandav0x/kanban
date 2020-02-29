@@ -85,6 +85,33 @@ document.getElementById('modal-button-confirm').addEventListener('click', functi
     console.warn('yet to be implemented');
 });
 
+let project_list_promise = new Promise((resolve) => {
+    ajax('/project', 'GET', resolve);
+});
+
+let status_list_promise = new Promise((resolve) => {
+    ajax('/status', 'GET', resolve);
+});
+
+Promise.all([project_list_promise, status_list_promise]).then((response) => {
+    let projects_list = JSON.parse(response[0]);
+    let status_list = JSON.parse(response[1]);
+
+    for (let project of projects_list) {
+        let project_option = createElement('option', project.name, [
+            {'value': project.id}
+        ]);
+        document.getElementById('modal-task-project').appendChild(project_option);
+    }
+
+    for (let status of status_list) {
+        let project_option = createElement('option', status.name, [
+            {'value': status.id}
+        ]);
+        document.getElementById('modal-task-status').appendChild(project_option);
+    }
+});
+
 function ajax(url, protocol, callback)
 {
     let xhr = new XMLHttpRequest();
