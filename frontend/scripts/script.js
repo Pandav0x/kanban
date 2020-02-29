@@ -29,6 +29,12 @@ document.addEventListener('dragend', function(event){
     event.target.classList.remove('dragged');
 });
 
+document.addEventListener('dragover', function(event){
+    if(!event.target.closest('.status-column'))
+        return;
+    event.preventDefault();
+});
+
 document.addEventListener('drop', function(event){
     if(!event.target.closest('.status-column'))
         return;
@@ -189,7 +195,6 @@ function displayTasks()
             task_element.appendChild(createElement('div', task.name, [
                         {'id': 'task-' + task.id},
                         {'class': 'task-element'},
-                        //{'class': 'neon-blue-white'},
                         {'draggable': 'true'}
                     ]));
 
