@@ -14,6 +14,8 @@ document.addEventListener("DOMContentLoaded", function(){
         .then(() => {
             Promise.resolve(task_promise).then(()=> {});
         });
+
+    fetchModalSelectInfos();
 });
 
 document.addEventListener('dragstart', function(event){
@@ -99,7 +101,6 @@ document.getElementById('modal-button-confirm').addEventListener('click', functi
                 return;
             }
 
-            console.log(new_task_name, new_task_project_id, new_task_status_id);
             let new_task_promise = new Promise((resolve) => {
                 ajax('/task/create/', 'POST', resolve, {
                     'name': new_task_name,
@@ -109,7 +110,7 @@ document.getElementById('modal-button-confirm').addEventListener('click', functi
             });
 
             Promise.resolve(new_task_promise).then((message) => {
-                console.log(message);
+                fetchModalSelectInfos();
                 displayTasks();
             });
 
@@ -127,7 +128,7 @@ document.getElementById('modal-button-confirm').addEventListener('click', functi
             });
 
             Promise.resolve(new_project_promise).then((message) => {
-                console.log(message);
+                fetchModalSelectInfos();
             });
             break;
         case 'status':
@@ -142,39 +143,47 @@ document.getElementById('modal-button-confirm').addEventListener('click', functi
             });
 
             Promise.resolve(new_status_promise).then((message) => {
-                console.log(message);
+                fetchModalSelectInfos();
                 displayStatuses();
             });
             break;
     }
 });
 
-let project_list_promise = new Promise((resolve) => {
-    ajax('/project/read/', 'GET', resolve);
-});
+function fetchModalSelectInfos(){
+    let project_list_promise = new Promise((resolve) => {
+        ajax('/project/read/', 'GET', resolve);
+    });
 
-let status_list_promise = new Promise((resolve) => {
-    ajax('/status/read/', 'GET', resolve);
-});
+    let status_list_promise = new Promise((resolve) => {
+        ajax('/status/read/', 'GET', resolve);
+    });
 
-Promise.all([project_list_promise, status_list_promise]).then((response) => {
-    let projects_list = JSON.parse(response[0]);
-    let status_list = JSON.parse(response[1]);
+    Promise.all([project_list_promise, status_list_promise]).then((response) => {
+        let projects_list = JSON.parse(response[0]);
+        let status_list = JSON.parse(response[1]);
 
-    for (let project of projects_list) {
-        let project_option = createElement('option', project.name, [
-            {'value': project.id}
-        ]);
-        document.getElementById('modal-task-project').appendChild(project_option);
-    }
+        let project_dropdown = document.getElementById('modal-task-project');
+        let status_dropdown = document.getElementById('modal-task-status');
 
-    for (let status of status_list) {
-        let project_option = createElement('option', status.name, [
-            {'value': status.id}
-        ]);
-        document.getElementById('modal-task-status').appendChild(project_option);
-    }
-});
+        project_dropdown.innerHTML = '';
+        status_dropdown.innerHTML = '';
+
+        for (let project of projects_list) {
+            let project_option = createElement('option', project.name, [
+                {'value': project.id}
+            ]);
+            project_dropdown.appendChild(project_option);
+        }
+
+        for (let status of status_list) {
+            let project_option = createElement('option', status.name, [
+                {'value': status.id}
+            ]);
+            status_dropdown.appendChild(project_option);
+        }
+    });
+}
 
 function ajax(url, method, callback, data = null)
 {
