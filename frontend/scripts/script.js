@@ -91,25 +91,59 @@ document.getElementById('modal-button-confirm').addEventListener('click', functi
     let tabName = document.getElementById('modal-menu').querySelector('.active').dataset.name;
     switch(tabName){
         case 'task':
+            let new_task_name = document.getElementById('modal-task-name').value;
+            let new_task_project_id = document.getElementById('modal-task-project').value;
+            let new_task_status_id = document.getElementById('modal-task-status').value;
+
+            if(new_task_project_id === '0' || new_task_status_id === '0' || new_task_name === '') {
+                return;
+            }
+
+            console.log(new_task_name, new_task_project_id, new_task_status_id);
+            let new_task_promise = new Promise((resolve) => {
+                ajax('/task/create/', 'POST', resolve, {
+                    'name': new_task_name,
+                    'project_id': new_task_project_id,
+                    'status_id': new_task_status_id
+                });
+            });
+
+            Promise.resolve(new_task_promise).then((message) => {
+                console.log(message);
+                displayTasks();
+            });
+
+
             break;
         case 'project':
-            /*let new_project
-            let new_status_promise = new Promise((resolve) => {
-                ajax('/status', 'POST', resolve, [{'name': new_status_name}]);
+            let new_project_name = document.getElementById('modal-project-name').value;
+
+            if(new_project_name === ''){
+                return;
+            }
+
+            let new_project_promise = new Promise((resolve) => {
+                ajax('/project/create/', 'POST', resolve, {'name': new_project_name});
             });
 
-            Promise.resolve(new_status_promise).then((message) => {
+            Promise.resolve(new_project_promise).then((message) => {
                 console.log(message);
-            });*/
+            });
             break;
         case 'status':
-            let new_status_name = document.getElementById('modal-status-name').text;
+            let new_status_name = document.getElementById('modal-status-name').value;
+
+            if(new_status_name === ''){
+                return;
+            }
+
             let new_status_promise = new Promise((resolve) => {
-                ajax('/status/create/', 'POST', resolve, [{'name': new_status_name}]);
+                ajax('/status/create/', 'POST', resolve, {'name': new_status_name});
             });
 
             Promise.resolve(new_status_promise).then((message) => {
                 console.log(message);
+                displayStatuses();
             });
             break;
     }
@@ -142,16 +176,27 @@ Promise.all([project_list_promise, status_list_promise]).then((response) => {
     }
 });
 
-function ajax(url, protocol, callback, data = null)
+function ajax(url, method, callback, data = null)
 {
+    let formattedData = '?';
+    if(data !== null) {
+        let dataArray = [];
+        for(let key in data) {
+            dataArray.push(`${key}=${data[key]}`);
+        }
+        formattedData += dataArray.join('&');
+    }
+
+    console.log(apiUrl + url + formattedData);
+
     let xhr = new XMLHttpRequest();
-    xhr.open(protocol, apiUrl + url);
+    xhr.open(method, apiUrl + url + formattedData);
     xhr.onload = function() {
         if (xhr.status === 200) {
             callback(xhr.responseText);
         }
     };
-    xhr.send(data);
+    xhr.send();
 }
 
 function getBackendId(element)
@@ -172,14 +217,15 @@ function displayStatuses()
             let statuses = JSON.parse(unparsed_statuses);
 
             statuses.forEach(function (status) {
+                if(document.getElementById('status-' + status.id) === null){
+                    let status_column = createElement('div', null, [
+                        {'id': 'status-' + status.id},
+                        {'class': 'status-column'}
+                    ]);
+                    status_column.appendChild(createElement('h2', status.name, [{'class': 'neon-white-red'}]));
 
-                let status_column = createElement('div', null, [
-                    {'id': 'status-' + status.id},
-                    {'class': 'status-column'}
-                ]);
-                status_column.appendChild(createElement('h2', status.name, [{'class': 'neon-white-red'}]));
-
-                document.getElementById('main-content-container').appendChild(status_column);
+                    document.getElementById('main-content-container').appendChild(status_column);
+                }
             });
             displayTasks();
         });
