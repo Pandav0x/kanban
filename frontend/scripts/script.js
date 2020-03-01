@@ -150,7 +150,11 @@ document.getElementById('modal-button-confirm').addEventListener('click', functi
     }
 });
 
-function fetchModalSelectInfos(){
+/**
+ *
+ */
+function fetchModalSelectInfos()
+{
     let project_list_promise = new Promise((resolve) => {
         ajax('/project/read/', 'GET', resolve);
     });
@@ -185,6 +189,12 @@ function fetchModalSelectInfos(){
     });
 }
 
+/**
+ * @param url
+ * @param method
+ * @param callback
+ * @param data
+ */
 function ajax(url, method, callback, data = null)
 {
     let formattedData = '?';
@@ -208,6 +218,10 @@ function ajax(url, method, callback, data = null)
     xhr.send();
 }
 
+/**
+ * @param element
+ * @returns {string}
+ */
 function getBackendId(element)
 {
     if(element === null)
@@ -215,6 +229,9 @@ function getBackendId(element)
     return element.id.substr(element.id.lastIndexOf('-') + 1);
 }
 
+/**
+ * @returns {Promise<any | never>}
+ */
 function displayStatuses()
 {
     let promise_statuses = new Promise((resolve) => {
@@ -241,6 +258,9 @@ function displayStatuses()
 }
 
 //TODO - Add a status argument to not fetch all tasks from all status on refresh after drop
+/**
+ * @returns {Promise<any | never>}
+ */
 function displayTasks()
 {
     let promise_tasks = new Promise((resolve) => {
@@ -286,6 +306,12 @@ function displayTasks()
     });
 }
 
+/**
+ * @param tag
+ * @param text
+ * @param attributes
+ * @returns {HTMLElement}
+ */
 function createElement(tag, text = null, attributes = [])
 {
     let element = document.createElement(tag);
