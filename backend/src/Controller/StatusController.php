@@ -19,7 +19,7 @@ class StatusController extends CustomController
     //TODO - cleanup a bit
 
     /**
-     * @Route("/", methods={"POST"})
+     * @Route("/create/", name="status_create", methods={"POST"})
      * @param Request $request
      * @return JsonResponse
      */
@@ -31,20 +31,15 @@ class StatusController extends CustomController
         $this->em->persist($status);
         $this->em->flush();
 
-        return new JsonResponse(
-            [
-                'code' => 200,
-                'message' => sprintf(
+        return $this->json(sprintf(
                     '%s created (id: %d)',
                     $request->get('name'),
                     $status->getId()
-                )
-            ]
-        );
+                ));
     }
 
     /**
-     * @Route("/{id}", methods={"GET"})
+     * @Route("/read/{id}/", name="status_read", methods={"GET"})
      * @param Status $status
      * @return JsonResponse
      */
@@ -60,7 +55,7 @@ class StatusController extends CustomController
     }
 
     /**
-     * @Route("/", methods={"GET"})
+     * @Route("/read/", name="status_read_all", methods={"GET"})
      * @return JsonResponse
      */
     public function readAll(): JsonResponse
@@ -73,7 +68,7 @@ class StatusController extends CustomController
     }
 
     /**
-     * @Route("/{id}", methods={"PUT"})
+     * @Route("/update/{id}/", name="status_update", methods={"PUT"})
      * @param Status $status
      * @param Request $request
      * @return JsonResponse
@@ -101,7 +96,7 @@ class StatusController extends CustomController
     }
 
     /**
-     * @Route("/{id}", methods={"DELETE"})
+     * @Route("/delete/{id}/", name="status_delete", methods={"DELETE"})
      * @param Status $status
      * @return JsonResponse
      */
@@ -120,7 +115,7 @@ class StatusController extends CustomController
     }
 
     /**
-     * @Route("/{id}/task", methods={"GET"})
+     * @Route("/{id}/task/", name="status_get_tasks", methods={"GET"})
      * @param Status $status
      * @return JsonResponse
      */

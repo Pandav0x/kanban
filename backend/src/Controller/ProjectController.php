@@ -18,7 +18,7 @@ class ProjectController extends CustomController
     //TODO - cleanup a bit
 
     /**
-     * @Route("/", methods={"POST"})
+     * @Route("/create/", name="project_create", methods={"POST"})
      * @param Request $request
      * @return JsonResponse
      */
@@ -30,20 +30,15 @@ class ProjectController extends CustomController
         $this->em->persist($project);
         $this->em->flush();
 
-        return new JsonResponse(
-            [
-                'code' => 200,
-                'message' => sprintf(
+       return $this->json(sprintf(
                     '%s created (id: %d)',
                     $request->get('name'),
                     $project->getId()
-                )
-            ]
-        );
+                ));
     }
 
     /**
-     * @Route("/{id}", methods={"GET"})
+     * @Route("/read/{id}/", name="project_read", methods={"GET"})
      * @param Project $project
      * @return JsonResponse
      */
@@ -53,7 +48,7 @@ class ProjectController extends CustomController
     }
 
     /**
-     * @Route("/", methods={"GET"})
+     * @Route("/read/", name="project_read_all", methods={"GET"})
      * @return JsonResponse
      */
     public function readAll(): JsonResponse
@@ -66,7 +61,7 @@ class ProjectController extends CustomController
     }
 
     /**
-     * @Route("/{id}", methods={"PUT"})
+     * @Route("/update{id}/", name="project_update", methods={"PUT"})
      * @param Project|null $project
      * @param Request $request
      * @return JsonResponse
@@ -94,7 +89,7 @@ class ProjectController extends CustomController
     }
 
     /**
-     * @Route("/{id}", methods={"DELETE"})
+     * @Route("/delete/{id}/", name="project_delete", methods={"DELETE"})
      * @param Project|null $project
      * @return JsonResponse
      */

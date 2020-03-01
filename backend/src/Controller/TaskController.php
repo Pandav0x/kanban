@@ -21,7 +21,7 @@ class TaskController extends CustomController
     //TODO - cleanup a bit
 
     /**
-     * @Route("/", methods={"POST"})
+     * @Route("/create/", name="task_create", methods={"POST"})
      * @param Request $request
      * @return JsonResponse
      * @throws \Exception
@@ -36,20 +36,15 @@ class TaskController extends CustomController
         $this->em->persist($task);
         $this->em->flush();
 
-        return new JsonResponse(
-            [
-                'code' => 200,
-                'message' => sprintf(
+        return $this->json(sprintf(
                     '%s created (id: %d)',
                     $request->get('name'),
                     $task->getId()
-                )
-            ]
-        );
+                ));
     }
 
     /**
-     * @Route("/{id}", methods={"GET"})
+     * @Route("/read/{id}/", name="task_read", methods={"GET"})
      * @param Task $task
      * @return JsonResponse
      */
@@ -59,7 +54,7 @@ class TaskController extends CustomController
     }
 
     /**
-     * @Route("/", methods={"GET"})
+     * @Route("/read/", name="task_read_all", methods={"GET"})
      * @return JsonResponse
      */
     public function readAll(): JsonResponse
@@ -73,7 +68,7 @@ class TaskController extends CustomController
 
 
     /**
-     * @Route("/{id}", methods={"PUT"})
+     * @Route("/update/{id}/", name="task_update", methods={"PUT"})
      * @param Task|null $task
      * @param Request $request
      * @return JsonResponse
@@ -107,7 +102,7 @@ class TaskController extends CustomController
     }
 
     /**
-     * @Route("/{id}", methods={"DELETE"})
+     * @Route("/delete/{id}", name="task_delete", methods={"DELETE"})
      * @param Task $task
      * @return JsonResponse
      */
@@ -133,7 +128,7 @@ class TaskController extends CustomController
     }
 
     /**
-     * @Route("/{task}/set/status/{status}")
+     * @Route("/{task}/set/status/{status}/", name="task_set_status", methods={"GET"})
      * @param Task|null $task
      * @param Status|null $status
      * @return JsonResponse
@@ -151,7 +146,7 @@ class TaskController extends CustomController
     }
 
     /**
-     * @Route("/{task}/set/project/{project}")
+     * @Route("/{task}/set/project/{project}/", name="task_set_project", methods={"GET"})
      * @param Task|null $task
      * @param Project|null $project
      * @return JsonResponse
@@ -178,7 +173,7 @@ class TaskController extends CustomController
     }
 
     /**
-     * @Route("/{id}/status")
+     * @Route("/{id}/status/", name="task_get_status", methods={"GET"})
      * @param Task $task
      * @return JsonResponse
      */
@@ -188,7 +183,7 @@ class TaskController extends CustomController
     }
 
     /**
-     * @Route("/{id}/project")
+     * @Route("/{id}/project/", name="task_get_project", methods={"GET"})
      * @param Task $task
      * @return JsonResponse
      */

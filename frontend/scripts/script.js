@@ -89,15 +89,38 @@ for(let i = 0; i < modal_menu_button.length; i++){
 
 document.getElementById('modal-button-confirm').addEventListener('click', function(){
     let tabName = document.getElementById('modal-menu').querySelector('.active').dataset.name;
-    console.warn('confirm from: ' + tabName);
+    switch(tabName){
+        case 'task':
+            break;
+        case 'project':
+            /*let new_project
+            let new_status_promise = new Promise((resolve) => {
+                ajax('/status', 'POST', resolve, [{'name': new_status_name}]);
+            });
+
+            Promise.resolve(new_status_promise).then((message) => {
+                console.log(message);
+            });*/
+            break;
+        case 'status':
+            let new_status_name = document.getElementById('modal-status-name').text;
+            let new_status_promise = new Promise((resolve) => {
+                ajax('/status/create/', 'POST', resolve, [{'name': new_status_name}]);
+            });
+
+            Promise.resolve(new_status_promise).then((message) => {
+                console.log(message);
+            });
+            break;
+    }
 });
 
 let project_list_promise = new Promise((resolve) => {
-    ajax('/project', 'GET', resolve);
+    ajax('/project/read/', 'GET', resolve);
 });
 
 let status_list_promise = new Promise((resolve) => {
-    ajax('/status', 'GET', resolve);
+    ajax('/status/read/', 'GET', resolve);
 });
 
 Promise.all([project_list_promise, status_list_promise]).then((response) => {
@@ -119,7 +142,7 @@ Promise.all([project_list_promise, status_list_promise]).then((response) => {
     }
 });
 
-function ajax(url, protocol, callback)
+function ajax(url, protocol, callback, data = null)
 {
     let xhr = new XMLHttpRequest();
     xhr.open(protocol, apiUrl + url);
@@ -128,7 +151,7 @@ function ajax(url, protocol, callback)
             callback(xhr.responseText);
         }
     };
-    xhr.send();
+    xhr.send(data);
 }
 
 function getBackendId(element)
@@ -141,7 +164,7 @@ function getBackendId(element)
 function displayStatuses()
 {
     let promise_statuses = new Promise((resolve) => {
-        ajax('/status', 'GET', resolve);
+        ajax('/status/read/', 'GET', resolve);
     });
     return Promise.resolve(promise_statuses)
         .then((unparsed_statuses) => {
@@ -166,7 +189,7 @@ function displayStatuses()
 function displayTasks()
 {
     let promise_tasks = new Promise((resolve) => {
-        ajax('/task', 'GET', resolve);
+        ajax('/task/read/', 'GET', resolve);
     });
 
     return Promise.resolve(promise_tasks).then((unparsed_tasks) => {
@@ -182,9 +205,9 @@ function displayTasks()
 
             if(task_project === null){
                 task_project = createElement('ul', null, [
-                        {'id': 'status-' + task.status.id + '-project-' + task.project.id},
-                        {'class': 'project-container'}
-                    ]);
+                    {'id': 'status-' + task.status.id + '-project-' + task.project.id},
+                    {'class': 'project-container'}
+                ]);
 
                 task_project.appendChild(createElement('span', task.project.name, [{'class': 'project-title'}]));
 
@@ -193,10 +216,10 @@ function displayTasks()
 
             let task_element = createElement('li');
             task_element.appendChild(createElement('div', task.name, [
-                        {'id': 'task-' + task.id},
-                        {'class': 'task-element'},
-                        {'draggable': 'true'}
-                    ]));
+                {'id': 'task-' + task.id},
+                {'class': 'task-element'},
+                {'draggable': 'true'}
+            ]));
 
             if(document.querySelector('#task-' + task.id) !== null ||
                 task_status.querySelector('#task-' + task.id) !== null) {
