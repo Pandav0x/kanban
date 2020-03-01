@@ -30,11 +30,8 @@ class ProjectController extends CustomController
         $this->em->persist($project);
         $this->em->flush();
 
-       return $this->json(sprintf(
-                    '%s created (id: %d)',
-                    $request->get('name'),
-                    $project->getId()
-                ));
+       return $this
+           ->json(sprintf('%s created (id: %d)', $request->get('name'), $project->getId()));
     }
 
     /**

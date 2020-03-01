@@ -28,8 +28,6 @@ class CustomController extends AbstractController
      */
     protected $em;
 
-    protected $repository;
-
     public function __construct()
     {
         $encoder = new JsonEncoder();

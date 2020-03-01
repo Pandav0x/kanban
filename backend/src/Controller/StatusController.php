@@ -26,16 +26,14 @@ class StatusController extends CustomController
     public function create(Request $request): JsonResponse
     {
         $status = new Status();
+
         $status->setName($request->get('name'));
 
         $this->em->persist($status);
         $this->em->flush();
 
-        return $this->json(sprintf(
-                    '%s created (id: %d)',
-                    $request->get('name'),
-                    $status->getId()
-                ));
+        return $this
+            ->json(sprintf('%s created (id: %d)', $request->get('name'), $status->getId()));
     }
 
     /**

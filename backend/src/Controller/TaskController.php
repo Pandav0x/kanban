@@ -6,7 +6,6 @@ namespace App\Controller;
 use App\Entity\Project;
 use App\Entity\Status;
 use App\Entity\Task;
-use DateTimeImmutable;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,19 +27,22 @@ class TaskController extends CustomController
      */
     public function create(Request $request): JsonResponse
     {
+        //TODO - Add guard
         $task = new Task();
-        $task->setName($request->get('name'));
-        $task->setDescription($request->get('description'))
-            ->setCreationDate(new DateTimeImmutable());
+        $task->setName($request->get('name'))
+            ->setDescription($request->get('description') ?? '');
+
+        $taskProject = $this->em->getRepository(Project::class)->findOneById($request->get('project_id'));
+        $taskStatus = $this->em->getRepository(Status::class)->findOneById($request->get('status_id'));
+
+        $task->setProject($taskProject)
+            ->setStatus($taskStatus);
 
         $this->em->persist($task);
         $this->em->flush();
 
-        return $this->json(sprintf(
-                    '%s created (id: %d)',
-                    $request->get('name'),
-                    $task->getId()
-                ));
+        return $this
+            ->json(sprintf('%s created (id: %d)', $request->get('name'), $task->getId()));
     }
 
     /**
