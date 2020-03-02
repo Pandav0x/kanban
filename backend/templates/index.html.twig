@@ -1,5 +1,53 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ encore_entry_link_tags('app') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
+
 {% block body %}
-    <h1>SALUT LES AMIS C;EST MOI ET AUHOURDH;UI JE SUIS CHAUD DU CUL</h1>
+    <div id="button-add">add</div>
+    <div class="hide" id="modal-wrapper">
+        <div class="modal-menu" id="modal-menu">
+            <span class="modal-menu-item active" data-toggle-id="modal-task-form" data-name="task">task</span>
+            <span class="modal-menu-item" data-toggle-id="modal-project-form" data-name="project">project</span>
+            <span class="modal-menu-item" data-toggle-id="modal-status-form" data-name="status">status</span>
+        </div>
+        <div class="modal-tab" id="modal-task-form">
+            <div>
+                <label for="modal-task-name">task name</label>
+                <input type="text" id="modal-task-name" name="task-name">
+            </div>
+            <div>
+                <label for="modal-task-project">project</label>
+                <select name="task-project" id="modal-task-project">
+                    <option value="0">select a project</option>
+                </select>
+            </div>
+            <div>
+                <label for="modal-task-status">status</label>
+                <select name="task-project" id="modal-task-status">
+                    <option value="0">select a status</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-tab hide" id="modal-project-form">
+            <div>
+                <label for="modal-project-name">project name</label>
+                <input type="text" id="modal-project-name">
+            </div>
+        </div>
+        <div class="modal-tab hide" id="modal-status-form">
+            <div>
+                <label for="modal-status-name">status name</label>
+                <input type="text" id="modal-status-name">
+            </div>
+        </div>
+        <button id="modal-button-confirm">confirm</button>
+    </div>
+    <div id="main-content-container" class="">
+    </div>
 {% endblock %}

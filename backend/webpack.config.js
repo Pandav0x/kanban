@@ -55,6 +55,9 @@ Encore
         config.useBuiltIns = 'usage';
         config.corejs = 3;
     })
+    .addPlugin(new CopyWebpackPlugin([
+        { from: './assets/img', to: 'img' }
+    ]))
 
 
     // enables Sass/SCSS support
