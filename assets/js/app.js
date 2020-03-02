@@ -1,3 +1,5 @@
+let serverUrl = null;
+
 document.addEventListener("DOMContentLoaded", function(){
 
     let status_promise = new Promise(() => {
@@ -187,6 +189,13 @@ function fetchModalSelectInfos()
     });
 }
 
+function getServerUrl()
+{
+    if(serverUrl === null)
+        serverUrl = document.getElementsByTagName('body')[0].dataset.serverUrl;
+    return serverUrl;
+}
+
 /**
  * @param url
  * @param method
@@ -205,7 +214,7 @@ function ajax(url, method, callback, data = null)
     }
 
     let xhr = new XMLHttpRequest();
-    xhr.open(method, url + formattedData);
+    xhr.open(method, getServerUrl() + url + formattedData);
     xhr.onload = function() {
         if (xhr.status === 200) {
             callback(xhr.responseText);
