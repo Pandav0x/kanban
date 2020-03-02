@@ -1,5 +1,3 @@
-let apiUrl = 'http://127.0.0.1:8000';
-
 document.addEventListener("DOMContentLoaded", function(){
 
     let status_promise = new Promise(() => {
@@ -206,10 +204,8 @@ function ajax(url, method, callback, data = null)
         formattedData += dataArray.join('&');
     }
 
-    console.log(apiUrl + url + formattedData);
-
     let xhr = new XMLHttpRequest();
-    xhr.open(method, apiUrl + url + formattedData);
+    xhr.open(method, url + formattedData);
     xhr.onload = function() {
         if (xhr.status === 200) {
             callback(xhr.responseText);
