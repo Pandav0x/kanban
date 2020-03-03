@@ -39,6 +39,49 @@ body {
     display: none;
 }
 
+
+/**
+ * Edit area
+ */
+.edit-area {
+    display: grid;
+
+    grid-template-columns: auto 2em; /* TODO: find a way to get rid of the arbitrary 30 */
+    grid-template-rows: auto auto auto;
+}
+
+.edit-area textarea {
+    grid-column: 1 / span 1;
+    grid-row: 1 / span 3;
+}
+
+.delete-button{
+    background-color: red;
+    color: white;
+
+    grid-column: 2 / span 1;
+    grid-row: 1 / span 1;
+}
+
+.validate-button{
+    background-color: green;
+    color: white;
+
+    grid-column: 2 / span 1;
+    grid-row: 2 / span 1;
+}
+
+.exit-button{
+    background-color: beige;
+    color: black;
+
+    grid-column: 2 / span 1;
+    grid-row: 3 / span 1;
+}
+
+/**
+ *  Modal
+ */
 #modal-wrapper {
     position: fixed;
     left: 40vw;
