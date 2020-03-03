@@ -1,7 +1,7 @@
 let xml_parser = new XMLSerializer();
 let dom_parser = new DOMParser();
 
-let edited_elements = [];
+let staging_elements = [];
 
 document.addEventListener("DOMContentLoaded", function(){
 
@@ -112,7 +112,7 @@ document.addEventListener('click', function(event){
 
     if(event.target.closest('.exit-button')){
         let edit_panel_id = event.target.parentNode.id;
-        if(edited_elements[edit_panel_id] !== null){
+        if(staging_elements[edit_panel_id] !== null){
 
             let edit_panel = document.getElementById(edit_panel_id);
             let original_element = loadElement(edit_panel_id, 'element');
@@ -125,7 +125,7 @@ document.addEventListener('click', function(event){
         let edit_panel_id = event.target.parentNode.id;
         let edit_context = event.target.parentNode.dataset.context;
         console.log(edit_context);
-        if(edited_elements[edit_panel_id] !== null){
+        if(staging_elements[edit_panel_id] !== null){
 
             let edit_panel = document.getElementById(edit_panel_id);
             let original_element = loadElement(edit_panel_id, 'element');
@@ -140,18 +140,21 @@ document.addEventListener('click', function(event){
             //TODO - ajax save
 
             document.getElementById(parent_id).replaceChild(original_element, edit_panel);
+            removeElement(edit_panel_id);
         }
     }
 
     if(event.target.closest('.delete-button')){
         let edit_panel_id = event.target.parentNode.id;
         let edit_context = event.target.parentNode.dataset.context;
-        if(edited_elements[edit_panel_id] !== null){
+        if(staging_elements[edit_panel_id] !== null){
             let parent_id = loadElement(edit_panel_id, 'parent_id');
 
             document.getElementById(parent_id).remove();
 
             console.log(getBackendId(parent_id));
+
+            removeElement(edit_panel_id);
         }
 
         //TODO - ajax delete
@@ -161,7 +164,7 @@ document.addEventListener('click', function(event){
 
 function saveElement(key, element, parent_id)
 {
-    edited_elements[key] = {
+    staging_elements[key] = {
         'element': xml_parser.serializeToString(element),
         'parent_id': parent_id
     };
@@ -171,16 +174,16 @@ function loadElement(key, flag)
 {
     switch (flag){
         case 'element':
-            return dom_parser.parseFromString(edited_elements[key].element, 'text/xml').documentElement;
+            return dom_parser.parseFromString(staging_elements[key].element, 'text/xml').documentElement;
         case 'parent_id':
-            return edited_elements[key].parent_id;
+            return staging_elements[key].parent_id;
     }
-    return edited_elements[key];
+    return staging_elements[key];
 }
 
 function removeElement(key)
 {
-    delete edited_elements[key];
+    delete staging_elements[key];
 }
 
 //Modal
