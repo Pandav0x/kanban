@@ -58,7 +58,7 @@ class ProjectController extends CustomController
     }
 
     /**
-     * @Route("/update{id}/", name="project_update", methods={"PUT"})
+     * @Route("/update/{id}/", name="project_update", methods={"PUT"})
      * @param Project|null $project
      * @param Request $request
      * @return JsonResponse

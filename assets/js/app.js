@@ -124,7 +124,6 @@ document.addEventListener('click', function(event){
     if(event.target.closest('.validate-button')){
         let edit_panel_id = event.target.parentNode.id;
         let edit_context = event.target.parentNode.dataset.context;
-        console.log(edit_context);
         if(staging_elements[edit_panel_id] !== null){
 
             let edit_panel = document.getElementById(edit_panel_id);
@@ -134,10 +133,10 @@ document.addEventListener('click', function(event){
             original_element.innerText = edit_panel.querySelector('textarea').value;
 
             let update_promise = new Promise((resolve) => {
-                ajax('/' + edit_context + '/update/' + getBackendId(parent_id) + '/' , 'PUT', resolve);
+                ajax('/' + edit_context + '/update/' + getBackendId(parent_id) + '/' , 'PUT', resolve, {'name': original_element.innerText});
             });
 
-            //TODO - ajax save
+            Promise.resolve(update_promise).then((message) => {});
 
             document.getElementById(parent_id).replaceChild(original_element, edit_panel);
             removeElement(edit_panel_id);
@@ -153,6 +152,12 @@ document.addEventListener('click', function(event){
             document.getElementById(parent_id).remove();
 
             console.log(getBackendId(parent_id));
+
+            let delete_promise = new Promise((resolve) => {
+                ajax('/' + edit_context + '/delete/' + getBackendId(parent_id) + '/' , 'DELETE', resolve);
+            });
+
+            Promise.resolve(delete_promise).then((message) => {});
 
             removeElement(edit_panel_id);
         }
@@ -426,7 +431,7 @@ function displayTasks()
                 task_status.appendChild(task_project);
             }
 
-            let task_element = createElement('li', null, [{'id': 'task-' + task.id + '-container'}]);
+            let task_element = createElement('li', null, [{'id': 'task-container-' + task.id}]);
 
             task_element.appendChild(createElement('div', task.name, [
                 {'id': 'task-' + task.id},
