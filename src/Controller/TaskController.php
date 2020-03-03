@@ -104,7 +104,7 @@ class TaskController extends CustomController
     }
 
     /**
-     * @Route("/delete/{id}", name="task_delete", methods={"DELETE"})
+     * @Route("/delete/{id}/", name="task_delete", methods={"DELETE"})
      * @param Task $task
      * @return JsonResponse
      */

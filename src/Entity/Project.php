@@ -33,7 +33,7 @@ class Project
     private $gitUrl;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Task", mappedBy="project")
+     * @ORM\OneToMany(targetEntity="App\Entity\Task", mappedBy="project",  cascade={"remove"})
      * @Groups("all_infos")
      */
     private $tasks;
