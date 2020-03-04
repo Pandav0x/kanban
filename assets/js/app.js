@@ -1,6 +1,5 @@
 let xml_parser = new XMLSerializer();
 let dom_parser = new DOMParser();
-
 let staging_elements = [];
 
 document.addEventListener("DOMContentLoaded", function(){
@@ -108,8 +107,6 @@ document.addEventListener('dblclick', function(event) {
 });
 
 document.addEventListener('click', function(event){
-    //TODO - refactor
-
     if(event.target.closest('.exit-button')){
         let edit_panel_id = event.target.parentNode.id;
         if(staging_elements[edit_panel_id] !== null){
@@ -161,9 +158,6 @@ document.addEventListener('click', function(event){
 
             removeElement(edit_panel_id);
         }
-
-        //TODO - ajax delete
-
     }
 });
 
@@ -371,7 +365,6 @@ function displayStatuses()
         });
 }
 
-//TODO - Add a status argument to not fetch all tasks from all status on refresh after drop
 /**
  * @returns {Promise<any | never>}
  */

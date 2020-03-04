@@ -36,6 +36,7 @@ You can edit an element by double clicking on it:
 
 ![Edit](.readme/editing.png)
 
+
 You can *Delete* the element by clicking `[X]`, *Validate* your modifications by clicking `[V]` or cancel the editing by clicking `[~]`.
  
  ## Built With
@@ -47,5 +48,6 @@ You can *Delete* the element by clicking `[X]`, *Validate* your modifications by
  ## TODO
  
  - [ ] README
+ - [ ] Fix the disappearance of the task if dropped in the state it is currently in 
  - [ ] Fix TODOs in the code
  - [ ] Clean the backend (entities/controller)
