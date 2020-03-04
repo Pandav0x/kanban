@@ -167,30 +167,6 @@ document.addEventListener('click', function(event){
     }
 });
 
-function saveElement(key, element, parent_id)
-{
-    staging_elements[key] = {
-        'element': xml_parser.serializeToString(element),
-        'parent_id': parent_id
-    };
-}
-
-function loadElement(key, flag)
-{
-    switch (flag){
-        case 'element':
-            return dom_parser.parseFromString(staging_elements[key].element, 'text/xml').documentElement;
-        case 'parent_id':
-            return staging_elements[key].parent_id;
-    }
-    return staging_elements[key];
-}
-
-function removeElement(key)
-{
-    delete staging_elements[key];
-}
-
 //Modal
 document.getElementById('button-add').addEventListener('click', function() {
     document.getElementById('modal-wrapper').classList.toggle('hide');
@@ -482,4 +458,41 @@ function createElement(tag, text = null, attributes = [])
     }
 
     return element;
+}
+
+/**
+ * @param key
+ * @param element
+ * @param parent_id
+ */
+function saveElement(key, element, parent_id)
+{
+    staging_elements[key] = {
+        'element': xml_parser.serializeToString(element),
+        'parent_id': parent_id
+    };
+}
+
+/**
+ * @param key
+ * @param flag
+ * @returns {*}
+ */
+function loadElement(key, flag)
+{
+    switch (flag){
+        case 'element':
+            return dom_parser.parseFromString(staging_elements[key].element, 'text/xml').documentElement;
+        case 'parent_id':
+            return staging_elements[key].parent_id;
+    }
+    return staging_elements[key];
+}
+
+/**
+ * @param key
+ */
+function removeElement(key)
+{
+    delete staging_elements[key];
 }
