@@ -16,7 +16,7 @@ class ProjectFixture extends BaseFixture
      */
     protected function loadData(ObjectManager $manager)
     {
-        $this->createMany($this->faker->numberBetween(10, 20), 'project', function(){
+        $this->createMany($this->faker->numberBetween(5, 7), 'project', function(){
             $project = new Project();
             $project->setName($this->faker->sentence($this->faker->numberBetween(2, 4), false))
                 ->setGitUrl($this->faker->url);

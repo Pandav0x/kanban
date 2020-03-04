@@ -17,7 +17,7 @@ class TaskFixture extends BaseFixture implements DependentFixtureInterface
      */
     protected function loadData(ObjectManager $manager)
     {
-        $this->createMany($this->faker->numberBetween(50, 100), 'task', function(){
+        $this->createMany($this->faker->numberBetween(10, 20), 'task', function(){
             $task = new Task();
             $task->setName($this->faker->sentence($this->faker->numberBetween(4, 8), false))
                 ->setDescription($this->faker->sentence($this->faker->numberBetween(50, 200), false))
