@@ -66,23 +66,14 @@ class ProjectController extends CustomController
     public function update(?Project $project, Request $request): JsonResponse
     {
         if($project === null){
-            return new JsonResponse([
-                'code' => 404,
-                'message' => 'No status found.'
-            ]);
+            return $this->json('No status found.');
         }
 
         $project->setName($request->get('name'));
 
         $this->em->flush();
 
-        return new JsonResponse([
-            'code' => 200,
-            'message' => sprintf(
-                'Project (id: %d) has been updated.',
-                $project->getId()
-            )
-        ]);
+        return $this->json(sprintf('Project (id: %d) has been updated.', $project->getId()));
     }
 
     /**
@@ -93,21 +84,13 @@ class ProjectController extends CustomController
     public function delete(?Project $project): JsonResponse
     {
         if($project === null){
-            return new JsonResponse([
-                'code' => 404,
-                'message' => 'No project found.'
-            ]);
+            return $this->json('No project found.');
         }
 
         $id = $project->getId();
         $this->em->remove($project);
         $this->em->flush();
 
-        return new JsonResponse(
-            [
-                'code' => 200,
-                'message' => sprintf('Project %d successfully deleted.', $id)
-            ]
-        );
+        return $this->json(sprintf('Project %d successfully deleted.', $id));
     }
 }

@@ -78,10 +78,7 @@ class TaskController extends CustomController
     public function update(?Task $task, Request $request): JsonResponse
     {
         if($task === null){
-            return new JsonResponse([
-                'code' => 404,
-                'message' => 'No task found.'
-            ]);
+            return $this->json('No task found.');
         }
 
         if(!empty($request->get('name'))){
@@ -94,13 +91,7 @@ class TaskController extends CustomController
 
         $this->em->flush();
 
-        return new JsonResponse([
-            'code' => 200,
-            'message' => sprintf(
-                'Task (id: %d) has been updated.',
-                $task->getId()
-            )
-        ]);
+        return $this->json(sprintf('Task (id: %d) has been updated.', $task->getId()));
     }
 
     /**
@@ -111,22 +102,14 @@ class TaskController extends CustomController
     public function delete(?Task $task): JsonResponse
     {
         if($task === null){
-            return new JsonResponse([
-                'code' => 404,
-                'message' => 'No task found.'
-            ]);
+            return $this->json('No task found.');
         }
 
         $id = $task->getId();
         $this->em->remove($task);
         $this->em->flush();
 
-        return new JsonResponse(
-            [
-                'code' => 200,
-                'message' => sprintf('Task %d successfully deleted.', $id)
-            ]
-        );
+        return $this->json(sprintf('Task %d successfully deleted.', $id));
     }
 
     /**
@@ -156,22 +139,13 @@ class TaskController extends CustomController
     public function setProject(?Task $task, ?Project $project): JsonResponse
     {
         if($task === null || $project === null){
-            return new JsonResponse([
-                'code' => 404,
-                'message' => 'Could not find the specified task nor project.'
-            ]);
+            return $this->json('Could not find the specified task nor project.');
         }
 
         $task->setProject($project);
         $this->em->flush();
 
-        return new JsonResponse([
-            'code' => 200,
-            'message' => sprintf(
-                '%d task has been set to project %s.',
-                $task->getId(),
-                $project->getName()
-            )]);
+        return $this->json(sprintf('%d task has been set to project %s.', $task->getId(), $project->getName()));
     }
 
     /**

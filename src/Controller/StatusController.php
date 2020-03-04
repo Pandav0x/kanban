@@ -74,23 +74,14 @@ class StatusController extends CustomController
     public function update(?Status $status, Request $request): JsonResponse
     {
         if($status === null){
-            return new JsonResponse([
-                'code' => 404,
-                'message' => 'No status found.'
-            ]);
+            return $this->json('No status found.');
         }
 
         $status->setName($request->get('name'));
 
         $this->em->flush();
 
-        return new JsonResponse([
-            'code' => 200,
-            'message' => sprintf(
-                'Status (id: %d) has been updated.',
-                $status->getId()
-            )
-        ]);
+        return $this->json(sprintf('Status (id: %d) has been updated.', $status->getId()));
     }
 
     /**
@@ -104,12 +95,7 @@ class StatusController extends CustomController
         $this->em->remove($status);
         $this->em->flush();
 
-        return new JsonResponse(
-            [
-                'code' => 200,
-                'message' => sprintf('Status %d successfully deleted.', $id)
-            ]
-        );
+        return $this->json(sprintf('Status %d successfully deleted.', $id));
     }
 
     /**
@@ -119,6 +105,6 @@ class StatusController extends CustomController
      */
     public function getTask(Status $status): JsonResponse
     {
-        return new JsonResponse(json_decode($this->serializer->serialize($status->getTasks(), 'json'), true));
+        return $this->json(json_decode($this->serializer->serialize($status->getTasks(), 'json'), true));
     }
 }
