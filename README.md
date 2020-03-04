@@ -24,9 +24,28 @@ You will need a database. The project is already setup for a **mysql** database,
  
  ## Result
  
- ![Overview](.readme/overview.png | width=100)
+Once the installation complete, you should get something like: 
+ 
+![Overview](.readme/overview.png)
+
+You can add an element by clicking the `add` 'button' in the top right corner of the screen:
+
+![Add](.readme/add.png)
+
+You can edit an element by double clicking on it:
+
+![Edit](.readme/editing.png)
+
+You can *Delete* the element by clicking `[X]`, *Validate* your modifications by clicking `[V]` or cancel the editing by clicking `[~]`.
  
  ## Built With
  
  * Symfony 5.0
  * Vanilla JS (witch is not a library)
+ * Webpack
+ 
+ ## TODO
+ 
+ - [ ] README
+ - [ ] Fix TODOs in the code
+ - [ ] Clean the backend (entities/controller)
