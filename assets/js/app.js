@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function(){
     fetchModalSelectInfos();
 });
 
+//Drag and Drop event binding
 document.addEventListener('dragstart', function(event){
     if(!event.target.closest('.task-element'))
         return;
@@ -48,7 +49,7 @@ document.addEventListener('drop', function(event){
 
     if(dragged_task !== null){
 
-        if(dragged_task.closest('.project-container').children.length === 2){//The span + the not yet removed div
+        if(dragged_task.closest('.project-container').children.length === 2){ //The span + the not yet removed div
             dragged_task.closest('.project-container').remove();
         }
 
@@ -67,7 +68,7 @@ document.addEventListener('drop', function(event){
     event.dataTransfer.clearData();
 });
 
-//Edit
+//Edit event binding
 document.addEventListener('dblclick', function(event) {
     if(event.target.dataset.editable !== undefined)
     {
@@ -161,7 +162,7 @@ document.addEventListener('click', function(event){
     }
 });
 
-//Modal
+//Modal event binding
 document.getElementById('button-add').addEventListener('click', function() {
     document.getElementById('modal-wrapper').classList.toggle('hide');
 });
@@ -247,7 +248,7 @@ document.getElementById('modal-button-confirm').addEventListener('click', functi
 });
 
 /**
- *
+ * Gets information and fill the selects in the modal creation form
  */
 function fetchModalSelectInfos()
 {
@@ -286,6 +287,7 @@ function fetchModalSelectInfos()
 }
 
 /**
+ * Makes an ajax call to a given url, with a given method and given data
  * @param url
  * @param method
  * @param callback
@@ -313,6 +315,7 @@ function ajax(url, method, callback, data = null)
 }
 
 /**
+ * Generates a random string 13 characters long
  * @returns {string}
  */
 function getRandomString()
@@ -321,6 +324,7 @@ function getRandomString()
 }
 
 /**
+ * Parse a given element's id to get its backend id
  * @param element
  * @returns {string}
  */
@@ -334,6 +338,7 @@ function getBackendId(element)
 }
 
 /**
+ * Display all the statuses
  * @returns {Promise<any | never>}
  */
 function displayStatuses()
@@ -366,6 +371,7 @@ function displayStatuses()
 }
 
 /**
+ * Display all the tasks
  * @returns {Promise<any | never>}
  */
 function displayTasks()
@@ -420,6 +426,7 @@ function displayTasks()
 }
 
 /**
+ * Creates DOM element with a given tag, text and attributes
  * @param tag
  * @param text
  * @param attributes
@@ -454,6 +461,7 @@ function createElement(tag, text = null, attributes = [])
 }
 
 /**
+ * Save a DOM element in the staging area with a given key, itself and its parent's DOM id
  * @param key
  * @param element
  * @param parent_id
@@ -467,6 +475,7 @@ function saveElement(key, element, parent_id)
 }
 
 /**
+ * Gets an element OR its parent's id from its staging key
  * @param key
  * @param flag
  * @returns {*}
@@ -483,6 +492,7 @@ function loadElement(key, flag)
 }
 
 /**
+ * Remove an element based on a given key
  * @param key
  */
 function removeElement(key)
