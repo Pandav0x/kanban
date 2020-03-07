@@ -47,6 +47,12 @@ document.addEventListener('drop', function(event){
 
     let dragged_task = document.getElementById(event.dataTransfer.getData('text'));
 
+    let destination_status = event.target.closest('.status-column');
+    let destination_status_id = getBackendId(destination_status);
+
+    if(destination_status_id === undefined)
+        return;
+
     if(dragged_task !== null){
 
         if(dragged_task.closest('.project-container').children.length === 2){ //The span + the not yet removed div
@@ -56,10 +62,8 @@ document.addEventListener('drop', function(event){
         dragged_task.closest('li').remove();
     }
 
-    let destination_status = event.target.closest('.status-column');
-
     let task_status_update = new Promise((resolve) => {
-        ajax('/task/' + getBackendId(dragged_task) + '/set/status/' + getBackendId(destination_status), 'GET', resolve)
+        ajax('/task/' + getBackendId(dragged_task) + '/set/status/' + destination_status_id, 'GET', resolve)
     });
     Promise.resolve(task_status_update).then((result) => {
         displayTasks();
@@ -167,25 +171,6 @@ document.getElementById('button-add').addEventListener('click', function() {
     document.getElementById('modal-wrapper').classList.toggle('hide');
 });
 
-let modal_menu_button = document.getElementsByClassName('modal-menu-item');
-for(let i = 0; i < modal_menu_button.length; i++){
-    modal_menu_button[i].addEventListener('click', function(){
-        let modal_tabs = document.getElementById('modal-wrapper').querySelectorAll('.modal-tab');
-        let form_id_toggled = event.target.dataset.toggleId;
-
-        //there is only one active, so no need to use querySelectorAll
-        document.getElementById('modal-menu').querySelector('.active').classList.remove('active');
-
-        event.target.classList.add('active');
-
-        for(let i = 0; i < modal_tabs.length; i++){
-            modal_tabs[i].classList.add('hide');
-        }
-
-        document.getElementById(form_id_toggled).classList.remove('hide');
-    });
-}
-
 document.getElementById('modal-button-confirm').addEventListener('click', function(){
     let tabName = document.getElementById('modal-menu').querySelector('.active').dataset.name;
     switch(tabName){
@@ -210,8 +195,6 @@ document.getElementById('modal-button-confirm').addEventListener('click', functi
                 fetchModalSelectInfos();
                 displayTasks();
             });
-
-
             break;
         case 'project':
             let new_project_name = document.getElementById('modal-project-name').value;
@@ -246,6 +229,25 @@ document.getElementById('modal-button-confirm').addEventListener('click', functi
             break;
     }
 });
+
+let modal_menu_button = document.getElementsByClassName('modal-menu-item');
+for(let i = 0; i < modal_menu_button.length; i++){
+    modal_menu_button[i].addEventListener('click', function(){
+        let modal_tabs = document.getElementById('modal-wrapper').querySelectorAll('.modal-tab');
+        let form_id_toggled = event.target.dataset.toggleId;
+
+        //there is only one active, so no need to use querySelectorAll
+        document.getElementById('modal-menu').querySelector('.active').classList.remove('active');
+
+        event.target.classList.add('active');
+
+        for(let i = 0; i < modal_tabs.length; i++){
+            modal_tabs[i].classList.add('hide');
+        }
+
+        document.getElementById(form_id_toggled).classList.remove('hide');
+    });
+}
 
 /**
  * Gets information and fill the selects in the modal creation form
