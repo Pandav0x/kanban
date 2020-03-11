@@ -153,8 +153,6 @@ document.addEventListener('click', function(event){
 
             document.getElementById(parent_id).remove();
 
-            console.log(getBackendId(parent_id));
-
             let delete_promise = new Promise((resolve) => {
                 ajax('/' + edit_context + '/delete/' + getBackendId(parent_id) + '/' , 'DELETE', resolve);
             });
