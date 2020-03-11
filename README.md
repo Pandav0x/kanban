@@ -14,11 +14,9 @@ You will need a database. The project is already setup for a **mysql** database,
 
 * `git clone https://github.com/Pandav0x/kanban.git`
 * `cd kanban`
-* `composer install`
-* `yarn install` or `npm install` or (any node package manager).
 * `cp .env .env.local`
 * Change the `.env.local` content to make it fit your config.
-* `php bin/console application:install` to create the database.
+* `make install` you can add `fixture` if you want to load some dummy data.
 
  Then you will need to either start a web server using the symfony application (downloadable [here](https://symfony.com/download)) or to use a real server.
  
