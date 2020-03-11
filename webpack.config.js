@@ -56,7 +56,7 @@ Encore
         config.corejs = 3;
     })
     .addPlugin(new CopyWebpackPlugin([
-        { from: './assets/img', to: '../' }
+        { from: './assets/img', to: 'img' }
     ]))
 
 
