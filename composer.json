@@ -6,6 +6,9 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "*",
+        "doctrine/doctrine-bundle": "*",
+        "doctrine/doctrine-migrations-bundle": "*",
+        "doctrine/orm": "*",
         "nelmio/cors-bundle": "^2.0",
         "sensio/framework-extra-bundle": "^5.5",
         "symfony/apache-pack": "^1.0",
@@ -15,7 +18,6 @@
         "symfony/flex": "^1.3.1",
         "symfony/framework-bundle": "5.0.*",
         "symfony/monolog-bundle": "3.5.*",
-        "symfony/orm-pack": "1.0.*",
         "symfony/property-access": "5.0.*",
         "symfony/serializer": "5.0.*",
         "symfony/twig-bundle": "5.0.*",
@@ -25,13 +27,15 @@
         "twig/twig": "3.0.*"
     },
     "require-dev": {
-        "roave/security-advisories": "dev-master",
         "doctrine/doctrine-fixtures-bundle": "^3.3",
         "fzaninotto/faker": "^1.9",
+        "roave/security-advisories": "dev-master",
         "symfony/maker-bundle": "^1.14",
         "symfony/process": "5.0.*",
-        "symfony/profiler-pack": "^1.0",
-        "symfony/var-dumper": "5.0.*"
+        "symfony/stopwatch": "*",
+        "symfony/twig-bundle": "*",
+        "symfony/var-dumper": "5.0.*",
+        "symfony/web-profiler-bundle": "*"
     },
     "config": {
         "preferred-install": {
