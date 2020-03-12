@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Entity\Project;
 use App\Entity\Status;
 use App\Entity\Task;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * @Route("/task")
  * @package App\Controller
  */
-class TaskController extends CustomController
+class TaskController extends AbstractController
 {
     //TODO - cleanup a bit
 
