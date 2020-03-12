@@ -10,6 +10,7 @@ yarn.lock: package.json
 node_modules: yarn.lock
 	yarn install
 
+.PHONY: db fixture ut ft test install
 db:
 	php bin/console doctrine:database:drop --force
 	php bin/console doctrine:database:create
