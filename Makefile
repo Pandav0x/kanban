@@ -18,4 +18,13 @@ db:
 fixture: db
 	php bin/console doctrine:fixtures:load -q
 
+ut:
+	php bin/phpunit --testsuite unit
+
+ft:
+	php bin/phpunit --testsuite functional
+
+test:
+	php bin/phpunit
+
 install: vendor node_modules db
