@@ -40,7 +40,7 @@ You can *Delete* the element by clicking `[X]`, *Validate* your modifications by
  ## Built With
  
  * Symfony 5.0
- * Vanilla JS (witch is not a library)
+ * Vanilla JS (which is not a library)
  * Webpack
  
  ## TODO
